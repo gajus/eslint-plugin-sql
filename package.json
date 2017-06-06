@@ -54,5 +54,5 @@
     "precommit": "npm run lint && npm run test",
     "test": "mocha --compilers js:babel-register ./test/rules/index.js"
   },
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
