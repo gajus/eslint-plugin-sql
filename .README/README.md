@@ -38,10 +38,21 @@ npm install eslint-plugin-sql --save-dev
   "rules": {
     "sql/format": [
       2,
-      "boolean"
+      {
+        "ignoreExpressions": false,
+        "ignoreInline": true,
+        "ignoreTagless": true
+      }
+    ],
+    "sql/no-unsafe-query": [
+      2,
+      {
+        "allowLiteral": false
+      }
     ]
   }
 }
+
 ```
 
 ## Settings
