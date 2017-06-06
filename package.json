@@ -23,6 +23,7 @@
     "eslint": "^3.19.0",
     "eslint-config-canonical": "8.2.1",
     "gitdown": "^2.5.0",
+    "glob": "^7.1.2",
     "husky": "^0.13.4",
     "jsonlint": "^1.6.2",
     "mocha": "^3.4.2",
