@@ -17,3 +17,5 @@ The first option is an object with the following configuration.
 |`ignoreTagless`|boolean|`true`|Does not format queries that are written without using `sql` tag.|
 
 The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).
+
+<!-- assertions format -->

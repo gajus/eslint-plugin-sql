@@ -10,11 +10,11 @@ import glob from 'glob';
 const formatCodeSnippet = (setup) => {
   const paragraphs = [];
 
+  paragraphs.push(setup.code);
+
   if (setup.options) {
     paragraphs.push('// Options: ' + JSON.stringify(setup.options));
   }
-
-  paragraphs.push(setup.code);
 
   if (setup.errors) {
     setup.errors.forEach((message) => {
@@ -24,6 +24,10 @@ const formatCodeSnippet = (setup) => {
 
   if (setup.rules) {
     paragraphs.push('// Additional rules: ' + JSON.stringify(setup.rules));
+  }
+
+  if (setup.output) {
+    paragraphs.push('// Fixed code: \n// ' + setup.output.split('\n').join('\n// '));
   }
 
   return paragraphs.join('\n');

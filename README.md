@@ -2,7 +2,6 @@
 # eslint-plugin-sql
 
 [![Travis build status](http://img.shields.io/travis/gajus/eslint-plugin-sql/master.svg?style=flat-square)](https://travis-ci.org/gajus/eslint-plugin-sql)
-[![Coveralls](https://img.shields.io/coveralls/gajus/eslint-plugin-sql.svg?style=flat-square)](https://coveralls.io/github/gajus/eslint-plugin-sql)
 [![NPM version](http://img.shields.io/npm/v/eslint-plugin-sql.svg?style=flat-square)](https://www.npmjs.org/package/eslint-plugin-sql)
 [![Canonical Code Style](https://img.shields.io/badge/code%20style-canonical-blue.svg?style=flat-square)](https://github.com/gajus/canonical)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kuizinas.svg?style=social&label=Follow)](https://twitter.com/kuizinas)
@@ -87,6 +86,59 @@ The first option is an object with the following configuration.
 
 The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).
 
+The following patterns are considered problems:
+
+```js
+`SELECT 1`
+// Options: [{"ignoreInline":false,"ignoreTagless":false}]
+// Message: Format the query
+// Fixed code: 
+// `SELECT
+//     1
+// `
+
+`SELECT 2`
+// Options: [{"ignoreInline":false,"ignoreTagless":false},{"spaces":2}]
+// Message: Format the query
+// Fixed code: 
+// `SELECT
+//   2
+// `
+
+sql`SELECT 3`
+// Options: [{"ignoreInline":false}]
+// Message: Format the query
+// Fixed code: 
+// sql`SELECT
+//     3
+// `
+
+`SELECT ${'foo'} FROM ${'bar'}`
+// Options: [{"ignoreInline":false,"ignoreTagless":false}]
+// Message: Format the query
+// Fixed code: 
+// `SELECT
+//     ${'foo'}
+// FROM
+//     ${'bar'}
+// `
+```
+
+The following patterns are not considered problems:
+
+```js
+sql`SELECT 1`
+// Options: [{"ignoreInline":true}]
+
+`SELECT 2`
+// Options: [{"ignoreTagless":true}]
+
+`SELECT ${'foo'} FROM ${'bar'}`
+// Options: [{"ignoreExpressions":true,"ignoreInline":false,"ignoreTagless":false}]
+```
+
+
+
 <a name="eslint-plugin-sql-rules-no-unsafe-query"></a>
 ### <code>no-unsafe-query</code>
 
@@ -122,8 +174,8 @@ foo`SELECT ${'bar'}`
 The following patterns are not considered problems:
 
 ```js
-// Options: [{"allowLiteral":true}]
 `SELECT 1`
+// Options: [{"allowLiteral":true}]
 
 sql`SELECT 1`
 
