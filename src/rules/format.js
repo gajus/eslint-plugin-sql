@@ -64,7 +64,7 @@ export default (context) => {
             return fixer.replaceTextRange([
               node.quasis[0].range[0],
               node.quasis[node.quasis.length - 1].range[1]
-            ], '`' + final + '`');
+            ], '`\n' + final + '`');
           },
           message: 'Format the query',
           node

@@ -15,7 +15,7 @@ export default {
           ignoreTagless: false
         }
       ],
-      output: '`SELECT\n    1\n`'
+      output: '`\nSELECT\n    1\n`'
     },
     {
       code: '`SELECT 2`',
@@ -33,7 +33,7 @@ export default {
           spaces: 2
         }
       ],
-      output: '`SELECT\n  2\n`'
+      output: '`\nSELECT\n  2\n`'
     },
     {
       code: 'sql`SELECT 3`',
@@ -47,7 +47,7 @@ export default {
           ignoreInline: false
         }
       ],
-      output: 'sql`SELECT\n    3\n`'
+      output: 'sql`\nSELECT\n    3\n`'
     },
     {
       code: '`SELECT ${\'foo\'} FROM ${\'bar\'}`',
@@ -62,7 +62,7 @@ export default {
           ignoreTagless: false
         }
       ],
-      output: '`SELECT\n    ${\'foo\'}\nFROM\n    ${\'bar\'}\n`'
+      output: '`\nSELECT\n    ${\'foo\'}\nFROM\n    ${\'bar\'}\n`'
     }
   ],
   valid: [
