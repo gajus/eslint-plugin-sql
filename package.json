@@ -51,7 +51,7 @@
     "build": "babel ./src --out-dir ./dist --copy-files",
     "documentation": "gitdown ./.README/README.md --output-file ./README.md && npm run documentation-add-assertions",
     "documentation-add-assertions": "babel-node ./bin/readmeAssertions",
-    "lint": "eslint ./src ./tests",
+    "lint": "eslint ./src ./test",
     "precommit": "npm run lint && npm run test",
     "test": "mocha --compilers js:babel-register ./test/rules/index.js"
   },

@@ -14,9 +14,8 @@ const reportingRules = [
 const parser = require.resolve('babel-eslint');
 
 for (const ruleName of reportingRules) {
-    /* eslint-disable global-require */
+  // eslint-disable-next-line global-require, import/no-dynamic-require
   const assertions = require('./assertions/' + _.camelCase(ruleName));
-    /* eslint-enable global-require */
 
   assertions.invalid = _.map(assertions.invalid, (assertion) => {
     assertion.parser = parser;
