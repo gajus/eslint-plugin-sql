@@ -17,7 +17,9 @@ export default (context) => {
 
   return {
     TemplateLiteral (node) {
-      if (ignoreTagless && !node.parent.tag) {
+      const sqlTagIsPresent = node.parent.tag && node.parent.tag.name === 'sql';
+
+      if (ignoreTagless && !sqlTagIsPresent) {
         return;
       }
 
@@ -33,7 +35,7 @@ export default (context) => {
         })
         .join(magic);
 
-      if (!isSqlQuery(literal)) {
+      if (!sqlTagIsPresent && !isSqlQuery(literal)) {
         return;
       }
 
