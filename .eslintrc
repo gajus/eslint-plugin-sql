@@ -1,5 +1,6 @@
 {
   "extends": [
-    "canonical"
+    "canonical",
+    "canonical/flowtype"
   ]
 }
