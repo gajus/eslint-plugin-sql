@@ -112,7 +112,8 @@ The following patterns are considered problems:
 // Options: [{"ignoreInline":false,"ignoreTagless":false}]
 // Message: Format the query
 // Fixed code: 
-// `SELECT
+// `
+// SELECT
 //     1
 // `
 
@@ -120,7 +121,8 @@ The following patterns are considered problems:
 // Options: [{"ignoreInline":false,"ignoreTagless":false},{"spaces":2}]
 // Message: Format the query
 // Fixed code: 
-// `SELECT
+// `
+// SELECT
 //   2
 // `
 
@@ -128,7 +130,8 @@ sql`SELECT 3`
 // Options: [{"ignoreInline":false}]
 // Message: Format the query
 // Fixed code: 
-// sql`SELECT
+// sql`
+// SELECT
 //     3
 // `
 
@@ -136,7 +139,8 @@ sql`SELECT 3`
 // Options: [{"ignoreInline":false,"ignoreTagless":false}]
 // Message: Format the query
 // Fixed code: 
-// `SELECT
+// `
+// SELECT
 //     ${'foo'}
 // FROM
 //     ${'bar'}
