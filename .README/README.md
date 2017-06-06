@@ -57,7 +57,13 @@ npm install eslint-plugin-sql --save-dev
 
 ## Settings
 
-N/A
+### `placeholderRule`
+
+A regex used to ignore placeholders or other fragments of the query that'd make it invalid SQL query, e.g.
+
+If you are using `?` placeholders in your queries, you must ignore `\?` pattern as otherwise the string is not going to be recognized as a valid SQL query.
+
+This configuration is relevant for `sql/no-unsafe-query` to match queries containing placeholders as well as for `sql/format` when used with `{ignoreTagless: false}` configuration.
 
 ## Rules
 

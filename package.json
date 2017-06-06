@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "astring": "^1.0.2",
+    "debug": "^2.6.8",
     "lodash": "^4.17.4",
     "pg-formatter": "^1.1.0",
     "sql-parse": "^0.1.5"
@@ -53,7 +54,7 @@
     "documentation-add-assertions": "babel-node ./bin/readmeAssertions",
     "lint": "eslint ./src ./test",
     "precommit": "npm run lint && npm run test",
-    "test": "mocha --compilers js:babel-register ./test/rules/index.js"
+    "test": "mocha --compilers js:babel-register ./test/**/*.js"
   },
   "version": "1.0.1"
 }

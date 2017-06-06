@@ -25,6 +25,19 @@ export default {
           message: 'Use "sql" tag'
         }
       ]
+    },
+    {
+      code: '`SELECT ?`',
+      errors: [
+        {
+          message: 'Use "sql" tag'
+        }
+      ],
+      settings: {
+        sql: {
+          placeholderRule: '\\?'
+        }
+      }
     }
   ],
   valid: [

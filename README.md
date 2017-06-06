@@ -14,6 +14,7 @@ SQL linting rules for ESLint.
     * [Installation](#eslint-plugin-sql-installation)
     * [Configuration](#eslint-plugin-sql-configuration)
     * [Settings](#eslint-plugin-sql-settings)
+        * [`placeholderRule`](#eslint-plugin-sql-settings-placeholderrule)
     * [Rules](#eslint-plugin-sql-rules)
         * [`format`](#eslint-plugin-sql-rules-format)
         * [`no-unsafe-query`](#eslint-plugin-sql-rules-no-unsafe-query)
@@ -68,7 +69,14 @@ npm install eslint-plugin-sql --save-dev
 <a name="eslint-plugin-sql-settings"></a>
 ## Settings
 
-N/A
+<a name="eslint-plugin-sql-settings-placeholderrule"></a>
+### <code>placeholderRule</code>
+
+A regex used to ignore placeholders or other fragments of the query that'd make it invalid SQL query, e.g.
+
+If you are using `?` placeholders in your queries, you must ignore `\?` pattern as otherwise the string is not going to be recognized as a valid SQL query.
+
+This configuration is relevant for `sql/no-unsafe-query` to match queries containing placeholders as well as for `sql/format` when used with `{ignoreTagless: false}` configuration.
 
 <a name="eslint-plugin-sql-rules"></a>
 ## Rules
@@ -179,6 +187,9 @@ The following patterns are considered problems:
 // Message: Use "sql" tag
 
 foo`SELECT ${'bar'}`
+// Message: Use "sql" tag
+
+`SELECT ?`
 // Message: Use "sql" tag
 ```
 

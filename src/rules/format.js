@@ -9,6 +9,8 @@ import {
 import isSqlQuery from '../utilities/isSqlQuery';
 
 export default (context) => {
+  const placeholderRule = context.settings.sql && context.settings.sql.placeholderRule;
+
   const pluginOptions = context.options && context.options[0] || {};
 
   const ignoreExpressions = pluginOptions.ignoreExpressions === true;
@@ -35,7 +37,7 @@ export default (context) => {
         })
         .join(magic);
 
-      if (!sqlTagIsPresent && !isSqlQuery(literal)) {
+      if (!sqlTagIsPresent && !isSqlQuery(literal, placeholderRule)) {
         return;
       }
 
