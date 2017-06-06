@@ -1,0 +1,17 @@
+{
+  "plugins": [
+    "transform-flow-strip-types",
+    "transform-object-rest-spread",
+    "add-module-exports"
+  ],
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": 4
+        }
+      }
+    ]
+  ]
+}

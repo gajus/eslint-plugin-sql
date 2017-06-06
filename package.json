@@ -1,0 +1,58 @@
+{
+  "author": {
+    "email": "gajus@gajus.com",
+    "name": "Gajus Kuizinas",
+    "url": "http://gajus.com"
+  },
+  "dependencies": {
+    "astring": "^1.0.2",
+    "lodash": "^4.17.4",
+    "pg-formatter": "^1.1.0",
+    "sql-parse": "^0.1.5"
+  },
+  "description": "SQL linting rules for ESLint.",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.5.1",
+    "babel-register": "^6.24.1",
+    "chai": "^4.0.2",
+    "eslint": "^3.19.0",
+    "eslint-config-canonical": "8.2.1",
+    "gitdown": "^2.5.0",
+    "husky": "^0.13.4",
+    "jsonlint": "^1.6.2",
+    "mocha": "^3.4.2",
+    "semantic-release": "^6.3.6"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "keywords": [
+    "eslint",
+    "plugin",
+    "sql"
+  ],
+  "license": "BSD-3-Clause",
+  "main": "./dist/index.js",
+  "name": "eslint-plugin-sql",
+  "peerDependencies": {
+    "eslint": ">=2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gajus/eslint-plugin-sql"
+  },
+  "scripts": {
+    "build": "babel ./src --out-dir ./dist --copy-files",
+    "documentation": "gitdown ./.README/README.md --output-file ./README.md && npm run documentation-add-assertions",
+    "documentation-add-assertions": "babel-node ./bin/readmeAssertions",
+    "lint": "eslint ./src ./tests",
+    "precommit": "npm run lint && npm run test",
+    "test": "mocha --compilers js:babel-register ./test/rules/index.js"
+  },
+  "version": "1.0.0"
+}
