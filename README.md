@@ -172,9 +172,8 @@ The `sql` tag can be anything, e.g.
 
 * https://github.com/seegno/sql-tag
 * https://github.com/gajus/mightyql#tagged-template-literals
-* https://github.com/nearform/sql
 
-<a name="eslint-plugin-sql-rules-no-unsafe-query-options"></a>
+<a name="eslint-plugin-sql-rules-no-unsafe-query-options-1"></a>
 #### Options
 
 The first option is an object with the following configuration.
