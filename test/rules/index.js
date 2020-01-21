@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import {
-    RuleTester
+  RuleTester,
 } from 'eslint';
-import plugin from './../../src';
+import plugin from '../../src';
 
 const ruleTester = new RuleTester();
 
 const reportingRules = [
   'format',
-  'no-unsafe-query'
+  'no-unsafe-query',
 ];
 
 const parser = require.resolve('babel-eslint');

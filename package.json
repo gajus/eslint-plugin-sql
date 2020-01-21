@@ -5,33 +5,33 @@
     "url": "http://gajus.com"
   },
   "dependencies": {
-    "astring": "^1.0.2",
-    "debug": "^2.6.8",
-    "lodash": "^4.17.4",
-    "pg-formatter": "^1.1.0",
+    "astring": "^1.4.3",
+    "debug": "^4.1.1",
+    "lodash": "^4.17.15",
+    "pg-formatter": "^1.1.2",
     "sql-parse": "^0.1.5"
   },
   "description": "SQL linting rules for ESLint.",
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-eslint": "^7.2.3",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-preset-env": "^1.5.1",
-    "babel-register": "^6.24.1",
-    "chai": "^4.0.2",
-    "eslint": "^3.19.0",
-    "eslint-config-canonical": "8.2.1",
-    "gitdown": "^2.5.0",
-    "glob": "^7.1.2",
-    "husky": "^0.13.4",
-    "jsonlint": "^1.6.2",
-    "mocha": "^3.4.2",
-    "semantic-release": "^6.3.6"
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/node": "^7.8.3",
+    "@babel/plugin-transform-flow-strip-types": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/register": "^7.8.3",
+    "babel-plugin-add-module-exports": "^1.0.2",
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-canonical": "18.1.0",
+    "gitdown": "^3.1.2",
+    "glob": "^7.1.6",
+    "husky": "^4.0.10",
+    "jsonlint": "^1.6.3",
+    "mocha": "^7.0.0",
+    "semantic-release": "^16.0.2"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=10"
   },
   "keywords": [
     "eslint",
@@ -42,7 +42,7 @@
   "main": "./dist/index.js",
   "name": "eslint-plugin-sql",
   "peerDependencies": {
-    "eslint": ">=2.0.0"
+    "eslint": ">=6.8.0"
   },
   "repository": {
     "type": "git",
@@ -54,7 +54,7 @@
     "documentation-add-assertions": "babel-node ./bin/readmeAssertions",
     "lint": "eslint ./src ./test",
     "precommit": "npm run lint && npm run test",
-    "test": "mocha --compilers js:babel-register ./test/**/*.js"
+    "test": "mocha --recursive --require @babel/register --reporter progress --timeout 9000"
   },
   "version": "1.0.1"
 }

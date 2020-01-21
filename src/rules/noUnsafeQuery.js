@@ -35,9 +35,9 @@ export default (context) => {
       if (!node.parent.tag || node.parent.tag.name !== 'sql') {
         context.report({
           message: 'Use "sql" tag',
-          node
+          node,
         });
       }
-    }
+    },
   };
 };

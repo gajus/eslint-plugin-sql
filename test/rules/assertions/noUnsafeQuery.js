@@ -6,54 +6,54 @@ export default {
       code: '`SELECT 1`',
       errors: [
         {
-          message: 'Use "sql" tag'
-        }
-      ]
+          message: 'Use "sql" tag',
+        },
+      ],
     },
     {
       code: '`SELECT ${\'foo\'}`',
       errors: [
         {
-          message: 'Use "sql" tag'
-        }
-      ]
+          message: 'Use "sql" tag',
+        },
+      ],
     },
     {
       code: 'foo`SELECT ${\'bar\'}`',
       errors: [
         {
-          message: 'Use "sql" tag'
-        }
-      ]
+          message: 'Use "sql" tag',
+        },
+      ],
     },
     {
       code: '`SELECT ?`',
       errors: [
         {
-          message: 'Use "sql" tag'
-        }
+          message: 'Use "sql" tag',
+        },
       ],
       settings: {
         sql: {
-          placeholderRule: '\\?'
-        }
-      }
-    }
+          placeholderRule: '\\?',
+        },
+      },
+    },
   ],
   valid: [
     {
       code: '`SELECT 1`',
       options: [
         {
-          allowLiteral: true
-        }
-      ]
+          allowLiteral: true,
+        },
+      ],
     },
     {
-      code: 'sql`SELECT 1`'
+      code: 'sql`SELECT 1`',
     },
     {
-      code: 'sql`SELECT ${\'foo\'}`'
-    }
-  ]
+      code: 'sql`SELECT ${\'foo\'}`',
+    },
+  ],
 };

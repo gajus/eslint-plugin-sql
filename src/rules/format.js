@@ -1,10 +1,10 @@
 // @flow
 
 import {
-  format
+  format,
 } from 'pg-formatter';
 import {
-  generate
+  generate,
 } from 'astring';
 import isSqlQuery from '../utilities/isSqlQuery';
 
@@ -63,13 +63,13 @@ export default (context) => {
 
             return fixer.replaceTextRange([
               node.quasis[0].range[0],
-              node.quasis[node.quasis.length - 1].range[1]
+              node.quasis[node.quasis.length - 1].range[1],
             ], '`\n' + final + '`');
           },
           message: 'Format the query',
-          node
+          node,
         });
       }
-    }
+    },
   };
 };
