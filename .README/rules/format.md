@@ -15,6 +15,7 @@ The first option is an object with the following configuration.
 |`ignoreExpressions`|boolean|`false`|Does not format template literals that contain expressions.|
 |`ignoreInline`|boolean|`true`|Does not format queries that are written on a single line.|
 |`ignoreTagless`|boolean|`true`|Does not format queries that are written without using `sql` tag.|
+|`ignoreStartWithNewLine`|boolean|`true`|Does not remove `\n` at the beginning of queries.|
 
 The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).
 

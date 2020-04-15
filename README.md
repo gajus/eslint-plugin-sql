@@ -102,6 +102,7 @@ The first option is an object with the following configuration.
 |`ignoreExpressions`|boolean|`false`|Does not format template literals that contain expressions.|
 |`ignoreInline`|boolean|`true`|Does not format queries that are written on a single line.|
 |`ignoreTagless`|boolean|`true`|Does not format queries that are written without using `sql` tag.|
+|`ignoreStartWithNewLine`|boolean|`true`|Does not remove `\n` at the beginning of queries.|
 
 The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).
 
@@ -171,9 +172,8 @@ The `sql` tag can be anything, e.g.
 
 * https://github.com/seegno/sql-tag
 * https://github.com/gajus/mightyql#tagged-template-literals
-* https://github.com/nearform/sql
 
-<a name="eslint-plugin-sql-rules-no-unsafe-query-options"></a>
+<a name="eslint-plugin-sql-rules-no-unsafe-query-options-1"></a>
 #### Options
 
 The first option is an object with the following configuration.

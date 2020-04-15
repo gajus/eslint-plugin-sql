@@ -16,6 +16,7 @@ export default (context) => {
   const ignoreExpressions = pluginOptions.ignoreExpressions === true;
   const ignoreInline = pluginOptions.ignoreInline !== false;
   const ignoreTagless = pluginOptions.ignoreTagless !== false;
+  const ignoreStartWithNewLine = pluginOptions.ignoreStartWithNewLine !== false;
 
   return {
     TemplateLiteral (node) {
@@ -45,7 +46,11 @@ export default (context) => {
         return;
       }
 
-      const formatted = format(literal, context.options[1]);
+      let formatted = format(literal, context.options[1]);
+
+      if (ignoreStartWithNewLine && literal.startsWith('\n') && !formatted.startsWith('\n')) {
+        formatted = '\n' + formatted;
+      }
 
       if (formatted !== literal) {
         context.report({
