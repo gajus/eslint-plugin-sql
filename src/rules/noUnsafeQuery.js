@@ -32,7 +32,7 @@ export default (context) => {
         return;
       }
 
-      if (!node.parent.tag || node.parent.tag.name !== 'sql') {
+      if (!node.parent.tag || node.parent.tag.name.toLowerCase() !== 'sql') {
         context.report({
           message: 'Use "sql" tag',
           node,
