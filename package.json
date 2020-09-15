@@ -7,28 +7,28 @@
   "dependencies": {
     "astring": "^1.4.3",
     "debug": "^4.1.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "pg-formatter": "^1.1.2",
     "sql-parse": "^0.1.5"
   },
   "description": "SQL linting rules for ESLint.",
   "devDependencies": {
-    "@babel/cli": "^7.8.3",
-    "@babel/core": "^7.8.3",
-    "@babel/node": "^7.8.3",
-    "@babel/plugin-transform-flow-strip-types": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
-    "@babel/register": "^7.8.3",
-    "babel-plugin-add-module-exports": "^1.0.2",
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/node": "^7.10.5",
+    "@babel/plugin-transform-flow-strip-types": "^7.10.4",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/register": "^7.11.5",
+    "babel-plugin-add-module-exports": "^1.0.4",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
-    "eslint-config-canonical": "18.1.0",
-    "gitdown": "^3.1.2",
+    "eslint-config-canonical": "24.1.1",
+    "gitdown": "^3.1.3",
     "glob": "^7.1.6",
-    "husky": "^4.0.10",
+    "husky": "^4.3.0",
     "jsonlint": "^1.6.3",
-    "mocha": "^7.0.0",
-    "semantic-release": "^16.0.2"
+    "mocha": "^8.1.3",
+    "semantic-release": "^17.1.1"
   },
   "engines": {
     "node": ">=10"
@@ -42,7 +42,7 @@
   "main": "./dist/index.js",
   "name": "eslint-plugin-sql",
   "peerDependencies": {
-    "eslint": ">=6.8.0"
+    "eslint": ">=7.9.0"
   },
   "repository": {
     "type": "git",

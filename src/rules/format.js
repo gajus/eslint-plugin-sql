@@ -1,11 +1,11 @@
 // @flow
 
 import {
-  format,
-} from 'pg-formatter';
-import {
   generate,
 } from 'astring';
+import {
+  format,
+} from 'pg-formatter';
 import isSqlQuery from '../utilities/isSqlQuery';
 
 export default (context) => {

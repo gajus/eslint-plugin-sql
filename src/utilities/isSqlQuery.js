@@ -15,7 +15,7 @@ export default (literal: string, ignorePattern: string): boolean => {
 
   try {
     parser.parse(maybeSql);
-  } catch (error) {
+  } catch {
     return false;
   }
 
