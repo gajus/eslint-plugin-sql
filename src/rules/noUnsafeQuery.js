@@ -31,8 +31,10 @@ export default (context) => {
       if (!recognizedAsQuery) {
         return;
       }
+      
+      const tagName = (node.parent.tag && node.parent.tag.name && node.parent.tag.name.toLowerCase()) || (node.parent.tag && node.parent.tag.property && node.parent.tag.property.name && node.parent.tag.property.name.toLowerCase())
 
-      if (!node.parent.tag || node.parent.tag.name.toLowerCase() !== 'sql') {
+      if (tagName !== 'sql') {
         context.report({
           message: 'Use "sql" tag',
           node,
