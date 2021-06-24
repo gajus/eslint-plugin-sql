@@ -35,7 +35,7 @@ export default (context) => {
       const legacyTagName = tag && tag.name && tag.name.toLowerCase();
       const tagName = tag && tag.property && tag.property.name && tag.property.name.toLowerCase();
 
-      if (legacyTagName !== 'sql' || tagName !== 'sql') {
+      if (legacyTagName !== 'sql' && tagName !== 'sql') {
         context.report({
           message: 'Use "sql" tag',
           node,
