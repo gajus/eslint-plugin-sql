@@ -42,7 +42,7 @@
   "main": "./dist/index.js",
   "name": "eslint-plugin-sql",
   "peerDependencies": {
-    "eslint": ">=6.8.0"
+    "eslint": ">=7.9.0"
   },
   "repository": {
     "type": "git",
