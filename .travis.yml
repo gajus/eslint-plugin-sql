@@ -13,3 +13,6 @@ after_success:
   - rm -fr ./dist
   - npm run build
   - semantic-release
+
+env:
+  - NPM_CONFIG_LEGACY_PEER_DEPS=true
