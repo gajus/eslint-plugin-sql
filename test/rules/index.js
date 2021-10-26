@@ -11,10 +11,10 @@ const reportingRules = [
   'no-unsafe-query',
 ];
 
-const parser = require.resolve('babel-eslint');
+const parser = require.resolve('@babel/eslint-parser');
 
 for (const ruleName of reportingRules) {
-  // eslint-disable-next-line global-require, import/no-dynamic-require
+  // eslint-disable-next-line import/no-dynamic-require
   const assertions = require('./assertions/' + _.camelCase(ruleName));
 
   assertions.invalid = _.map(assertions.invalid, (assertion) => {

@@ -8,7 +8,7 @@ import {
 } from 'pg-formatter';
 import isSqlQuery from '../utilities/isSqlQuery';
 
-export default (context) => {
+const create = (context) => {
   const placeholderRule = context.settings.sql && context.settings.sql.placeholderRule;
 
   const pluginOptions = context.options && context.options[0] || {};
@@ -77,4 +77,65 @@ export default (context) => {
       }
     },
   };
+};
+
+export default {
+  create,
+  meta: {
+    docs: {
+      description: 'Matches queries in template literals. Warns when query formatting does not match the configured format (see Options).',
+      url: 'https://github.com/gajus/eslint-plugin-sql#eslint-plugin-sql-rules-format',
+    },
+    fixable: 'code',
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          ignoreExpressions: {
+            default: false,
+            type: 'boolean',
+          },
+          ignoreInline: {
+            default: true,
+            type: 'boolean',
+          },
+          ignoreStartWithNewLine: {
+            default: true,
+            type: 'boolean',
+          },
+          ignoreTagless: {
+            default: true,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+      {
+        additionalProperties: false,
+        properties: {
+          anonymize: {
+            default: false,
+            type: 'boolean',
+          },
+          noRcFile: {
+            default: false,
+            type: 'boolean',
+          },
+          spaces: {
+            type: 'number',
+          },
+          stripComments: {
+            default: false,
+            type: 'boolean',
+          },
+          tabs: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    type: 'suggestion',
+  },
 };
