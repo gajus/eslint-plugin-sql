@@ -4,7 +4,6 @@ node_js:
   - 10
 notifications:
   email: false
-sudo: false
 script:
   - npm run test
   - npm run lint
@@ -13,6 +12,5 @@ after_success:
   - rm -fr ./dist
   - npm run build
   - semantic-release
-
 env:
   - NPM_CONFIG_LEGACY_PEER_DEPS=true
