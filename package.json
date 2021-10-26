@@ -22,7 +22,7 @@
     "@babel/register": "^7.15.3",
     "babel-plugin-add-module-exports": "^1.0.4",
     "eslint": "^8.1.0",
-    "eslint-config-canonical": "32.7.0",
+    "eslint-config-canonical": "32.12.0",
     "gitdown": "^3.1.4",
     "glob": "^7.2.0",
     "mocha": "^9.1.3",

@@ -31,7 +31,8 @@ export default (context) => {
       if (!recognizedAsQuery) {
         return;
       }
-      const tag = node.parent.tag;
+
+      const {tag} = node.parent;
       const legacyTagName = tag && tag.name && tag.name.toLowerCase();
       const tagName = tag && tag.property && tag.property.name && tag.property.name.toLowerCase();
 
