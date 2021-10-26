@@ -29,7 +29,7 @@
     "semantic-release": "^18.0.0"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "keywords": [
     "eslint",
