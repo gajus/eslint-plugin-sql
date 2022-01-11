@@ -117,6 +117,10 @@ export default {
             default: false,
             type: 'boolean',
           },
+          commaBreak: {
+            default: false,
+            type: 'boolean',
+          },
           noRcFile: {
             default: false,
             type: 'boolean',
