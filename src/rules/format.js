@@ -17,8 +17,6 @@ const create = (context) => {
   const ignoreInline = pluginOptions.ignoreInline !== false;
   const ignoreTagless = pluginOptions.ignoreTagless !== false;
 
-  // const ignoreStartWithNewLine = pluginOptions.ignoreStartWithNewLine !== false;
-
   return {
     TemplateLiteral (node) {
       const sqlTagIsPresent = node.parent.tag && node.parent.tag.name === 'sql';
@@ -49,11 +47,6 @@ const create = (context) => {
 
       let formatted = format(literal.trim(), context.options[1]);
       formatted = `\n${formatted}`;
-
-      // if (literal.includes('EXIST') && !literal.includes('valid')) {
-      //   console.log('fmt:', formatted);
-      //   console.log('lt:', literal);
-      // }
 
       if (formatted !== literal) {
         context.report({
