@@ -3,6 +3,35 @@
 export default {
   invalid: [
     {
+      code: `sql\`
+IF EXISTS (
+    SELECT
+        1)
+DROP TABLE test;
+Select
+    1
+\``,
+      errors: [
+        {
+          message: 'Format the query',
+        },
+      ],
+      options: [
+        {
+          ignoreStartWithNewLine: true,
+        },
+      ],
+      output: `sql\`
+IF EXISTS (
+    SELECT
+        1)
+DROP TABLE test;
+
+Select
+    1
+\``
+    },
+    {
       code: '`SELECT 1`',
       errors: [
         {
@@ -66,6 +95,21 @@ export default {
     },
   ],
   valid: [
+    {
+      code: `sql\`
+-- valid
+IF EXISTS (
+    SELECT
+        1)
+DROP TABLE test;
+
+Select
+    1
+\``,
+      options: [{
+        ignoreStartWithNewLine: true,
+      }],
+    },
     {
       code: 'sql`SELECT 1`',
       options: [

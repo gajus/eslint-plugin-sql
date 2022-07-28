@@ -16,7 +16,8 @@ const create = (context) => {
   const ignoreExpressions = pluginOptions.ignoreExpressions === true;
   const ignoreInline = pluginOptions.ignoreInline !== false;
   const ignoreTagless = pluginOptions.ignoreTagless !== false;
-  const ignoreStartWithNewLine = pluginOptions.ignoreStartWithNewLine !== false;
+
+  // const ignoreStartWithNewLine = pluginOptions.ignoreStartWithNewLine !== false;
 
   return {
     TemplateLiteral (node) {
@@ -46,11 +47,13 @@ const create = (context) => {
         return;
       }
 
-      let formatted = format(literal, context.options[1]);
+      let formatted = format(literal.trim(), context.options[1]);
+      formatted = `\n${formatted}`;
 
-      if (ignoreStartWithNewLine && literal.startsWith('\n') && !formatted.startsWith('\n')) {
-        formatted = '\n' + formatted;
-      }
+      // if (literal.includes('EXIST') && !literal.includes('valid')) {
+      //   console.log('fmt:', formatted);
+      //   console.log('lt:', literal);
+      // }
 
       if (formatted !== literal) {
         context.report({
@@ -69,7 +72,7 @@ const create = (context) => {
             return fixer.replaceTextRange([
               node.quasis[0].range[0],
               node.quasis[node.quasis.length - 1].range[1],
-            ], '`\n' + final + '`');
+            ], '`' + final + '`');
           },
           message: 'Format the query',
           node,
