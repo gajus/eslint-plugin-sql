@@ -2,10 +2,10 @@
  * @file This script is used to inline assertions into the README.md documents.
  */
 
-import path from 'path';
 import fs from 'fs';
-import _ from 'lodash';
+import path from 'path';
 import glob from 'glob';
+import _ from 'lodash';
 
 const formatCodeSnippet = (setup) => {
   const paragraphs = [];
@@ -17,9 +17,9 @@ const formatCodeSnippet = (setup) => {
   }
 
   if (setup.errors) {
-    setup.errors.forEach((message) => {
+    for (const message of setup.errors) {
       paragraphs.push('// Message: ' + message.message);
-    });
+    }
   }
 
   if (setup.rules) {
@@ -41,12 +41,12 @@ const getAssertions = () => {
   });
 
   const assertionCodes = _.map(assertionFiles, (filePath) => {
-    // eslint-disable-next-line global-require, import/no-dynamic-require
+    // eslint-disable-next-line import/no-dynamic-require
     const codes = require(filePath);
 
     return {
       invalid: _.map(codes.invalid, formatCodeSnippet),
-      valid: _.map(codes.valid, formatCodeSnippet)
+      valid: _.map(codes.valid, formatCodeSnippet),
     };
   });
 
@@ -58,17 +58,15 @@ const updateDocuments = (assertions) => {
 
   let documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
 
-  documentBody = documentBody.replace(/<!-- assertions ([a-z]+?) -->/ig, (assertionsBlock) => {
+  documentBody = documentBody.replace(/<!-- assertions ([a-z]+?) -->/giu, (assertionsBlock) => {
     let exampleBody;
 
-    const ruleName = assertionsBlock.match(/assertions ([a-z]+)/i)[1];
+    const ruleName = assertionsBlock.match(/assertions ([a-z]+)/iu)[1];
 
     const ruleAssertions = assertions[ruleName];
 
     if (!ruleAssertions) {
       throw new Error('No assertions available for rule "' + ruleName + '".');
-
-      return assertionsBlock;
     }
 
     exampleBody = '';
