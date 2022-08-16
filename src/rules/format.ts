@@ -1,5 +1,3 @@
-// @flow
-
 import {
   generate,
 } from 'astring';
@@ -9,9 +7,11 @@ import {
 import isSqlQuery from '../utilities/isSqlQuery';
 
 const create = (context) => {
-  const placeholderRule = context.settings.sql && context.settings.sql.placeholderRule;
+  const {
+    placeholderRule,
+  } = context.settings.sql;
 
-  const pluginOptions = context.options && context.options[0] || {};
+  const pluginOptions = context.options?.[0] || {};
 
   const ignoreExpressions = pluginOptions.ignoreExpressions === true;
   const ignoreInline = pluginOptions.ignoreInline !== false;

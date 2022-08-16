@@ -1,14 +1,12 @@
-// @flow
-
 import createDebug from 'debug';
 import isSqlQuery from '../utilities/isSqlQuery';
 
 const debug = createDebug('eslint-plugin-sql:rule:no-unsafe-query');
 
 export default (context) => {
-  const placeholderRule = context.settings.sql && context.settings.sql.placeholderRule;
+  const {placeholderRule} = context.settings.sql;
 
-  const allowLiteral = context.options && context.options[0] && context.options[0].allowLiteral;
+  const {allowLiteral} = context.options[0];
 
   return {
     TemplateLiteral (node) {
@@ -33,8 +31,8 @@ export default (context) => {
       }
 
       const {tag} = node.parent;
-      const legacyTagName = tag && tag.name && tag.name.toLowerCase();
-      const tagName = tag && tag.property && tag.property.name && tag.property.name.toLowerCase();
+      const legacyTagName = tag.name.toLowerCase();
+      const tagName = tag.property.name.toLowerCase();
 
       if (legacyTagName !== 'sql' && tagName !== 'sql') {
         context.report({

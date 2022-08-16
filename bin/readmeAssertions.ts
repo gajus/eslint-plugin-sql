@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 /**
  * @file This script is used to inline assertions into the README.md documents.
  */
@@ -7,8 +10,19 @@ import path from 'path';
 import glob from 'glob';
 import _ from 'lodash';
 
-const formatCodeSnippet = (setup) => {
-  const paragraphs = [];
+type EslintError = {
+  message: string,
+};
+
+type Setup = {
+  code: string,
+  errors: EslintError[],
+  options: unknown[],
+  output: string,
+};
+
+const formatCodeSnippet = (setup: Setup) => {
+  const paragraphs: string[] = [];
 
   paragraphs.push(setup.code);
 
@@ -20,10 +34,6 @@ const formatCodeSnippet = (setup) => {
     for (const message of setup.errors) {
       paragraphs.push('// Message: ' + message.message);
     }
-  }
-
-  if (setup.rules) {
-    paragraphs.push('// Additional rules: ' + JSON.stringify(setup.rules));
   }
 
   if (setup.output) {
@@ -41,7 +51,6 @@ const getAssertions = () => {
   });
 
   const assertionCodes = _.map(assertionFiles, (filePath) => {
-    // eslint-disable-next-line import/no-dynamic-require
     const codes = require(filePath);
 
     return {
@@ -59,17 +68,19 @@ const updateDocuments = (assertions) => {
   let documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
 
   documentBody = documentBody.replace(/<!-- assertions ([a-z]+?) -->/giu, (assertionsBlock) => {
-    let exampleBody;
+    let exampleBody = '';
 
-    const ruleName = assertionsBlock.match(/assertions ([a-z]+)/iu)[1];
+    const ruleName = /assertions ([a-z]+)/iu.exec(assertionsBlock)?.[1];
+
+    if (!ruleName) {
+      throw new Error('Rule name not found.');
+    }
 
     const ruleAssertions = assertions[ruleName];
 
     if (!ruleAssertions) {
       throw new Error('No assertions available for rule "' + ruleName + '".');
     }
-
-    exampleBody = '';
 
     if (ruleAssertions.invalid.length) {
       exampleBody += 'The following patterns are considered problems:\n\n```js\n' + ruleAssertions.invalid.join('\n\n') + '\n```\n\n';

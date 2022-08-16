@@ -1,7 +1,13 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 import {
   RuleTester,
 } from 'eslint';
-import _ from 'lodash';
+import {
+  camelCase,
+  map,
+} from 'lodash';
 import plugin from '../../src';
 
 const ruleTester = new RuleTester();
@@ -14,16 +20,15 @@ const reportingRules = [
 const parser = require.resolve('@babel/eslint-parser');
 
 for (const ruleName of reportingRules) {
-  // eslint-disable-next-line import/no-dynamic-require
-  const assertions = require('./assertions/' + _.camelCase(ruleName));
+  const assertions = require('./assertions/' + camelCase(ruleName));
 
-  assertions.invalid = _.map(assertions.invalid, (assertion) => {
+  assertions.invalid = map(assertions.invalid, (assertion) => {
     assertion.parser = parser;
 
     return assertion;
   });
 
-  assertions.valid = _.map(assertions.valid, (assertion) => {
+  assertions.valid = map(assertions.valid, (assertion) => {
     assertion.parser = parser;
 
     return assertion;
