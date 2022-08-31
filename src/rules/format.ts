@@ -7,9 +7,7 @@ import {
 import isSqlQuery from '../utilities/isSqlQuery';
 
 const create = (context) => {
-  const {
-    placeholderRule,
-  } = context.settings.sql;
+  const placeholderRule = context.settings?.sql?.placeholderRule;
 
   const pluginOptions = context.options?.[0] || {};
 

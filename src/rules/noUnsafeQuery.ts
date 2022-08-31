@@ -4,7 +4,7 @@ import isSqlQuery from '../utilities/isSqlQuery';
 const debug = createDebug('eslint-plugin-sql:rule:no-unsafe-query');
 
 export default (context) => {
-  const {placeholderRule} = context.settings.sql;
+  const placeholderRule = context.settings?.sql?.placeholderRule;
 
   const {allowLiteral} = context.options[0];
 
@@ -31,8 +31,8 @@ export default (context) => {
       }
 
       const {tag} = node.parent;
-      const legacyTagName = tag.name.toLowerCase();
-      const tagName = tag.property.name.toLowerCase();
+      const legacyTagName = tag?.name.toLowerCase();
+      const tagName = tag.property?.name.toLowerCase();
 
       if (legacyTagName !== 'sql' && tagName !== 'sql') {
         context.report({
