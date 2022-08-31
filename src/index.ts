@@ -8,7 +8,7 @@ const rules = {
   'no-unsafe-query': noUnsafeQuery,
 };
 
-export default {
+export = {
   rules,
   rulesConfig: {
     format: 0,

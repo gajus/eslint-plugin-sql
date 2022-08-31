@@ -79,7 +79,7 @@ const create = (context) => {
   };
 };
 
-export default {
+export = {
   create,
   meta: {
     docs: {
