@@ -1,5 +1,8 @@
 src
-tests
+bin
+!/dist/src
+test
 coverage
+*.tgz
 .*
 *.log
