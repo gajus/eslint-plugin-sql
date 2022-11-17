@@ -3,12 +3,16 @@ import isSqlQuery from '../utilities/isSqlQuery';
 
 const debug = createDebug('eslint-plugin-sql:rule:no-unsafe-query');
 
+const defaultOptions = {
+  allowLiteral: false,
+};
+
 const create = (context) => {
   const placeholderRule = context.settings?.sql?.placeholderRule;
 
   const {
     allowLiteral,
-  } = context.options[0];
+  } = context.options[0] ?? defaultOptions;
 
   return {
     TemplateLiteral (node) {
