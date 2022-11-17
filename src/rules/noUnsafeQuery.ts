@@ -3,7 +3,7 @@ import isSqlQuery from '../utilities/isSqlQuery';
 
 const debug = createDebug('eslint-plugin-sql:rule:no-unsafe-query');
 
-export default (context) => {
+const create = (context) => {
   const placeholderRule = context.settings?.sql?.placeholderRule;
 
   const {
@@ -35,6 +35,7 @@ export default (context) => {
       const {
         tag,
       } = node.parent;
+
       const legacyTagName = tag?.name.toLowerCase();
       const tagName = tag.property?.name.toLowerCase();
 
@@ -46,4 +47,28 @@ export default (context) => {
       }
     },
   };
+};
+
+export = {
+  create,
+  meta: {
+    docs: {
+      description: 'Disallows use of SQL inside of template literals without the `sql` tag.',
+      url: 'https://github.com/gajus/eslint-plugin-sql#no-unsafe-query',
+    },
+    fixable: 'code',
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowLiteral: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    type: 'problem',
+  },
 };

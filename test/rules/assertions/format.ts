@@ -34,7 +34,7 @@ export default {
       output: '`\nSELECT\n  2\n`',
     },
     {
-      code: 'sql`SELECT 3`',
+      code: 'sql.unsafe`SELECT 3`',
       errors: [
         {
           message: 'Format the query',
@@ -45,7 +45,21 @@ export default {
           ignoreInline: false,
         },
       ],
-      output: 'sql`\nSELECT\n    3\n`',
+      output: 'sql.unsafe`\nSELECT\n    3\n`',
+    },
+    {
+      code: 'sql.type()`SELECT 3`',
+      errors: [
+        {
+          message: 'Format the query',
+        },
+      ],
+      options: [
+        {
+          ignoreInline: false,
+        },
+      ],
+      output: 'sql.type()`\nSELECT\n    3\n`',
     },
     {
       code: '`SELECT ${\'foo\'} FROM ${\'bar\'}`',
