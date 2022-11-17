@@ -119,6 +119,14 @@ export = {
             default: false,
             type: 'boolean',
           },
+          functionCase: {
+            default: 'lowercase',
+            type: 'string',
+          },
+          keywordsCase: {
+            default: 'lowercase',
+            type: 'string',
+          },
           noRcFile: {
             default: false,
             type: 'boolean',
