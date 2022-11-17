@@ -6,7 +6,9 @@ const debug = createDebug('eslint-plugin-sql:rule:no-unsafe-query');
 export default (context) => {
   const placeholderRule = context.settings?.sql?.placeholderRule;
 
-  const {allowLiteral} = context.options[0];
+  const {
+    allowLiteral,
+  } = context.options[0];
 
   return {
     TemplateLiteral (node) {
@@ -30,7 +32,9 @@ export default (context) => {
         return;
       }
 
-      const {tag} = node.parent;
+      const {
+        tag,
+      } = node.parent;
       const legacyTagName = tag?.name.toLowerCase();
       const tagName = tag.property?.name.toLowerCase();
 
