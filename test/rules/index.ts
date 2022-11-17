@@ -17,7 +17,7 @@ const ruleTester = new RuleTester({
 
 const reportingRules = [
   'format',
-  // 'no-unsafe-query',
+  'no-unsafe-query',
 ];
 
 for (const ruleName of reportingRules) {

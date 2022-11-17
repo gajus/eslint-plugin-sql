@@ -44,10 +44,10 @@ const formatCodeSnippet = (setup: Setup) => {
 };
 
 const getAssertions = () => {
-  const assertionFiles = glob.sync(path.resolve(__dirname, '../test/rules/assertions/*.js'));
+  const assertionFiles = glob.sync(path.resolve(__dirname, '../test/rules/assertions/*.ts'));
 
   const assertionNames = _.map(assertionFiles, (filePath) => {
-    return path.basename(filePath, '.js');
+    return path.basename(filePath, '.ts');
   });
 
   const assertionCodes = _.map(assertionFiles, (filePath) => {

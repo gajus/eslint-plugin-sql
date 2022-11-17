@@ -18,7 +18,9 @@ const create = (context) => {
 
   return {
     TemplateLiteral (node) {
-      const sqlTagIsPresent = node.parent.tag?.name === 'sql' || node.parent.tag?.object?.name === 'sql' || node.parent.tag?.callee?.object?.name === 'sql';
+      const tagName = node.parent.tag?.name ?? node.parent.tag?.object?.name ?? node.parent.tag?.callee?.object?.name;
+
+      const sqlTagIsPresent = tagName === 'sql';
 
       if (ignoreTagless && !sqlTagIsPresent) {
         return;

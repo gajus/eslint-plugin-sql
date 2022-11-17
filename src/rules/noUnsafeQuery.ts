@@ -40,8 +40,9 @@ const create = (context) => {
         tag,
       } = node.parent;
 
+      const tagName = node.parent.tag?.name ?? node.parent.tag?.object?.name ?? node.parent.tag?.callee?.object?.name;
+
       const legacyTagName = tag?.name.toLowerCase();
-      const tagName = tag.property?.name.toLowerCase();
 
       if (legacyTagName !== 'sql' && tagName !== 'sql') {
         context.report({
