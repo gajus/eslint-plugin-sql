@@ -3,9 +3,9 @@ coverage
 dist
 *.log
 .*
+!.babelrc
 !.eslintrc
+!.github
 !.gitignore
 !.npmignore
-!.babelrc
-!.travis.yml
 !.README
