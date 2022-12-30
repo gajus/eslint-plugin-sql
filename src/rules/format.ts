@@ -67,11 +67,6 @@ const create = (context) => {
         const formattedLines = formatted.split('\n');
         formatted = formattedLines
           .map((line, index) => {
-            // Don't indent first line
-            if (index === 0) {
-              return line;
-            }
-
             // Indent each subsequent line based on the spaces option
             let indentSpaces = context.options[1]?.spaces || 4;
 
