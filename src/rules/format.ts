@@ -15,6 +15,7 @@ const create = (context) => {
   const ignoreInline = pluginOptions.ignoreInline !== false;
   const ignoreTagless = pluginOptions.ignoreTagless !== false;
   const ignoreStartWithNewLine = pluginOptions.ignoreStartWithNewLine !== false;
+  const matchIndentation = pluginOptions.matchIndentation !== false;
 
   return {
     TemplateLiteral (node) {
@@ -50,6 +51,39 @@ const create = (context) => {
 
       if (ignoreStartWithNewLine && literal.startsWith('\n') && !formatted.startsWith('\n')) {
         formatted = '\n' + formatted;
+      }
+
+      if (matchIndentation) {
+        let firstNodeOnLine = node;
+
+        while (
+          firstNodeOnLine.parent &&
+          firstNodeOnLine.loc.start.line === firstNodeOnLine.parent.loc.start.line
+        ) {
+          firstNodeOnLine = firstNodeOnLine.parent;
+        }
+
+        const startingColumn = firstNodeOnLine.loc.start.column;
+        const formattedLines = formatted.split('\n');
+        formatted = formattedLines
+          .map((line, index) => {
+            // Don't indent first line
+            if (index === 0) {
+              return line;
+            }
+
+            // Indent each subsequent line based on the spaces option
+            let indentSpaces = context.options[1].spaces || 4;
+
+            // Except for the last line, which is dedented once to make the backtick line up
+            if (index === formattedLines.length - 1) {
+              indentSpaces = 0;
+            }
+
+            const indentation = ' '.repeat(startingColumn + indentSpaces);
+            return `${indentation}${line}`;
+          })
+          .join('\n');
       }
 
       if (formatted !== literal) {
