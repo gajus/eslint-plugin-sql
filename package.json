@@ -47,8 +47,8 @@
     "url": "https://github.com/gajus/eslint-plugin-sql"
   },
   "scripts": {
-    "install": "tsc",
-    "build": "npm run documentation && tsc",
+    "install": "npm run build",
+    "build": "tsc",
     "documentation": "gitdown ./.README/README.md --output-file ./README.md && npm run documentation-add-assertions",
     "documentation-add-assertions": "tsx ./bin/readmeAssertions",
     "lint": "eslint ./src ./test && tsc --noEmit",
