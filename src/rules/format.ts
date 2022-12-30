@@ -61,7 +61,7 @@ const create = (context) => {
 
         const startingColumn = firstNodeOnLine.loc.start.column;
         const formattedLines = formatted.split('\n');
-        formatted = formattedLines
+        const indented = formattedLines
           .map((line, index) => {
             // Indent each subsequent line based on the spaces option
             let indentSpaces = context.options[1]?.spaces || 4;
@@ -75,6 +75,10 @@ const create = (context) => {
             return `${indentation}${line}`;
           })
           .join('\n');
+
+          if (literal !== indented) {
+            formatted = indented;
+          }
       }
 
       if (ignoreStartWithNewLine && literal.startsWith('\n') && !formatted.startsWith('\n')) {
@@ -100,7 +104,7 @@ const create = (context) => {
               node.quasis[node.quasis.length - 1].range[1],
             ], '`\n' + final + '`');
           },
-          message: 'Format the query',
+          message: `Format the query ${formatted}, not ${literal}.`,
           node,
         });
       }
