@@ -76,14 +76,15 @@ const create = (context) => {
           })
           .join('\n');
 
-          if (literal !== indented) {
-            formatted = indented;
-          }
+        formatted = indented;
       }
 
       if (ignoreStartWithNewLine && literal.startsWith('\n') && !formatted.startsWith('\n')) {
         formatted = '\n' + formatted;
       }
+
+      // add newline to start of formatted
+      formatted = '\n' + formatted;
 
       if (formatted !== literal) {
         context.report({
@@ -102,9 +103,9 @@ const create = (context) => {
             return fixer.replaceTextRange([
               node.quasis[0].range[0],
               node.quasis[node.quasis.length - 1].range[1],
-            ], '`\n' + final + '`');
+            ], '`' + final + '`');
           },
-          message: `Format the query ${formatted}, not ${literal}.`,
+          message: `${JSON.stringify(literal)} should be formatted as ${JSON.stringify(formatted)}.`,
           node,
         });
       }
