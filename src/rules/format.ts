@@ -73,7 +73,7 @@ const create = (context) => {
             }
 
             // Indent each subsequent line based on the spaces option
-            let indentSpaces = context.options[1].spaces || 4;
+            let indentSpaces = context.options[1]?.spaces || 4;
 
             // Except for the last line, which is dedented once to make the backtick line up
             if (index === formattedLines.length - 1) {
