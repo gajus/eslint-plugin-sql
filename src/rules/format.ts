@@ -141,6 +141,10 @@ export = {
             default: true,
             type: 'boolean',
           },
+          matchIndentation: {
+            default: true,
+            type: 'boolean',
+          },
         },
         type: 'object',
       },
@@ -168,6 +172,7 @@ export = {
             type: 'boolean',
           },
           spaces: {
+            default: 2,
             type: 'number',
           },
           stripComments: {
