@@ -49,10 +49,6 @@ const create = (context) => {
 
       let formatted = format(literal, context.options[1]);
 
-      if (ignoreStartWithNewLine && literal.startsWith('\n') && !formatted.startsWith('\n')) {
-        formatted = '\n' + formatted;
-      }
-
       if (matchIndentation) {
         let firstNodeOnLine = node;
 
@@ -79,6 +75,10 @@ const create = (context) => {
             return `${indentation}${line}`;
           })
           .join('\n');
+      }
+
+      if (ignoreStartWithNewLine && literal.startsWith('\n') && !formatted.startsWith('\n')) {
+        formatted = '\n' + formatted;
       }
 
       if (formatted !== literal) {
