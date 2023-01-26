@@ -1,13 +1,36 @@
 {
-  "extends": [
-    "canonical",
-    "canonical/typescript"
-  ],
-  "parserOptions": {
-    "project": "./tsconfig.json"
-  },
-  "rules": {
-    "no-template-curly-in-string": 0
-  },
-  "root": true
+    "extends": [
+        "canonical",
+        "canonical/typescript",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@typescript-eslint/strict",
+        "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "prettier"
+    ],
+    "rules": {
+        "prettier/prettier": [
+            1,
+            {
+                "trailingComma": "es5",
+                "tabWidth": 4,
+                "printWidth": 80,
+                "semi": true,
+                "singleQuote": true,
+                "endOfLine": "auto"
+            }
+        ],
+        "@typescript-eslint/restrict-template-expressions": "off",
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "no-template-curly-in-string": 0
+    },
+    "root": true
 }
