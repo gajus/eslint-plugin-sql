@@ -1,9 +1,5 @@
-import {
-  generate,
-} from 'astring';
-import {
-  format,
-} from 'pg-formatter';
+import { generate } from 'astring';
+import { format } from 'pg-formatter';
 import isSqlQuery from '../utilities/isSqlQuery';
 
 const create = (context) => {
@@ -18,8 +14,11 @@ const create = (context) => {
   const matchIndentation = pluginOptions.matchIndentation !== false;
 
   return {
-    TemplateLiteral (node) {
-      const tagName = node.parent.tag?.name ?? node.parent.tag?.object?.name ?? node.parent.tag?.callee?.object?.name;
+    TemplateLiteral(node) {
+      const tagName =
+        node.parent.tag?.name ??
+        node.parent.tag?.object?.name ??
+        node.parent.tag?.callee?.object?.name;
 
       const sqlTagIsPresent = tagName === 'sql';
 
@@ -54,7 +53,8 @@ const create = (context) => {
 
         while (
           firstNodeOnLine.parent &&
-          firstNodeOnLine.loc.start.line === firstNodeOnLine.parent.loc.start.line
+          firstNodeOnLine.loc.start.line ===
+            firstNodeOnLine.parent.loc.start.line
         ) {
           firstNodeOnLine = firstNodeOnLine.parent;
         }
@@ -79,7 +79,11 @@ const create = (context) => {
         formatted = indented;
       }
 
-      if (ignoreStartWithNewLine && literal.startsWith('\n') && !formatted.startsWith('\n')) {
+      if (
+        ignoreStartWithNewLine &&
+        literal.startsWith('\n') &&
+        !formatted.startsWith('\n')
+      ) {
         formatted = '\n' + formatted;
       }
 
@@ -92,17 +96,25 @@ const create = (context) => {
             let index = 0;
 
             while (index <= expressionCount - 1) {
-              final = final.replace(magic, '${' + generate(node.expressions[index]) + '}');
+              final = final.replace(
+                magic,
+                '${' + generate(node.expressions[index]) + '}'
+              );
 
               index++;
             }
 
-            return fixer.replaceTextRange([
-              node.quasis[0].range[0],
-              node.quasis[node.quasis.length - 1].range[1],
-            ], '`' + final + '`');
+            return fixer.replaceTextRange(
+              [
+                node.quasis[0].range[0],
+                node.quasis[node.quasis.length - 1].range[1],
+              ],
+              '`' + final + '`'
+            );
           },
-          message: `${JSON.stringify(literal)} should be formatted as ${JSON.stringify(formatted)}.`,
+          message: `${JSON.stringify(
+            literal
+          )} should be formatted as ${JSON.stringify(formatted)}.`,
           node,
         });
       }
@@ -114,7 +126,8 @@ export = {
   create,
   meta: {
     docs: {
-      description: 'Matches queries in template literals. Warns when query formatting does not match the configured format (see Options).',
+      description:
+        'Matches queries in template literals. Warns when query formatting does not match the configured format (see Options).',
       url: 'https://github.com/gajus/eslint-plugin-sql#eslint-plugin-sql-rules-format',
     },
     fixable: 'code',

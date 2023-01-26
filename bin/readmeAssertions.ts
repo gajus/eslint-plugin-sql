@@ -11,14 +11,14 @@ import glob from 'glob';
 import _ from 'lodash';
 
 type EslintError = {
-  message: string,
+  message: string;
 };
 
 type Setup = {
-  code: string,
-  errors: EslintError[],
-  options: unknown[],
-  output: string,
+  code: string;
+  errors: EslintError[];
+  options: unknown[];
+  output: string;
 };
 
 const formatCodeSnippet = (setup: Setup) => {
@@ -37,14 +37,18 @@ const formatCodeSnippet = (setup: Setup) => {
   }
 
   if (setup.output) {
-    paragraphs.push('// Fixed code: \n// ' + setup.output.split('\n').join('\n// '));
+    paragraphs.push(
+      '// Fixed code: \n// ' + setup.output.split('\n').join('\n// ')
+    );
   }
 
   return paragraphs.join('\n');
 };
 
 const getAssertions = () => {
-  const assertionFiles = glob.sync(path.resolve(__dirname, '../test/rules/assertions/*.ts'));
+  const assertionFiles = glob.sync(
+    path.resolve(__dirname, '../test/rules/assertions/*.ts')
+  );
 
   const assertionNames = _.map(assertionFiles, (filePath) => {
     return path.basename(filePath, '.ts');
@@ -67,31 +71,40 @@ const updateDocuments = (assertions) => {
 
   let documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
 
-  documentBody = documentBody.replace(/<!-- assertions ([a-z]+?) -->/giu, (assertionsBlock) => {
-    let exampleBody = '';
+  documentBody = documentBody.replace(
+    /<!-- assertions ([a-z]+?) -->/giu,
+    (assertionsBlock) => {
+      let exampleBody = '';
 
-    const ruleName = /assertions ([a-z]+)/iu.exec(assertionsBlock)?.[1];
+      const ruleName = /assertions ([a-z]+)/iu.exec(assertionsBlock)?.[1];
 
-    if (!ruleName) {
-      throw new Error('Rule name not found.');
+      if (!ruleName) {
+        throw new Error('Rule name not found.');
+      }
+
+      const ruleAssertions = assertions[ruleName];
+
+      if (!ruleAssertions) {
+        throw new Error('No assertions available for rule "' + ruleName + '".');
+      }
+
+      if (ruleAssertions.invalid.length) {
+        exampleBody +=
+          'The following patterns are considered problems:\n\n```js\n' +
+          ruleAssertions.invalid.join('\n\n') +
+          '\n```\n\n';
+      }
+
+      if (ruleAssertions.valid.length) {
+        exampleBody +=
+          'The following patterns are not considered problems:\n\n```js\n' +
+          ruleAssertions.valid.join('\n\n') +
+          '\n```\n\n';
+      }
+
+      return exampleBody;
     }
-
-    const ruleAssertions = assertions[ruleName];
-
-    if (!ruleAssertions) {
-      throw new Error('No assertions available for rule "' + ruleName + '".');
-    }
-
-    if (ruleAssertions.invalid.length) {
-      exampleBody += 'The following patterns are considered problems:\n\n```js\n' + ruleAssertions.invalid.join('\n\n') + '\n```\n\n';
-    }
-
-    if (ruleAssertions.valid.length) {
-      exampleBody += 'The following patterns are not considered problems:\n\n```js\n' + ruleAssertions.valid.join('\n\n') + '\n```\n\n';
-    }
-
-    return exampleBody;
-  });
+  );
 
   fs.writeFileSync(readmeDocumentPath, documentBody);
 };

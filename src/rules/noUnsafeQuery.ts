@@ -10,12 +10,10 @@ const defaultOptions = {
 const create = (context) => {
   const placeholderRule = context.settings?.sql?.placeholderRule;
 
-  const {
-    allowLiteral,
-  } = context.options[0] ?? defaultOptions;
+  const { allowLiteral } = context.options[0] ?? defaultOptions;
 
   return {
-    TemplateLiteral (node) {
+    TemplateLiteral(node) {
       if (allowLiteral && node.quasis.length === 1) {
         return;
       }
@@ -36,11 +34,12 @@ const create = (context) => {
         return;
       }
 
-      const {
-        tag,
-      } = node.parent;
+      const { tag } = node.parent;
 
-      const tagName = node.parent.tag?.name ?? node.parent.tag?.object?.name ?? node.parent.tag?.callee?.object?.name;
+      const tagName =
+        node.parent.tag?.name ??
+        node.parent.tag?.object?.name ??
+        node.parent.tag?.callee?.object?.name;
 
       const legacyTagName = tag?.name.toLowerCase();
 
@@ -58,7 +57,8 @@ export = {
   create,
   meta: {
     docs: {
-      description: 'Disallows use of SQL inside of template literals without the `sql` tag.',
+      description:
+        'Disallows use of SQL inside of template literals without the `sql` tag.',
       url: 'https://github.com/gajus/eslint-plugin-sql#no-unsafe-query',
     },
     fixable: 'code',
