@@ -83,9 +83,6 @@ const create = (context) => {
         formatted = '\n' + formatted;
       }
 
-      // add newline to start of formatted
-      formatted = '\n' + formatted;
-
       if (formatted !== literal) {
         context.report({
           fix: (fixer) => {
