@@ -18,6 +18,7 @@
     "@semantic-release/npm": "^9.0.1",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.11.9",
+    "cspell": "^6.31.1",
     "eslint": "^8.27.0",
     "eslint-config-canonical": "37.0.3",
     "gitdown": "^3.1.5",
@@ -53,6 +54,7 @@
     "documentation": "gitdown ./.README/README.md --output-file ./README.md && npm run documentation-add-assertions",
     "documentation-add-assertions": "tsx ./bin/readmeAssertions",
     "lint": "eslint ./src ./test && tsc --noEmit",
+    "lint:cspell": "cspell './**/*.{ts,tsx}' --no-progress --gitignore",
     "test": "mocha --require tsx test/**/*"
   },
   "version": "1.0.1"
