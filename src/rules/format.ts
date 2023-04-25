@@ -1,10 +1,6 @@
-import {
-  generate,
-} from 'astring';
-import {
-  format,
-} from 'pg-formatter';
 import isSqlQuery from '../utilities/isSqlQuery';
+import { generate } from 'astring';
+import { format } from 'pg-formatter';
 
 const create = (context) => {
   const placeholderRule = context.settings?.sql?.placeholderRule;
@@ -17,8 +13,11 @@ const create = (context) => {
   const ignoreStartWithNewLine = pluginOptions.ignoreStartWithNewLine !== false;
 
   return {
-    TemplateLiteral (node) {
-      const tagName = node.parent.tag?.name ?? node.parent.tag?.object?.name ?? node.parent.tag?.callee?.object?.name;
+    TemplateLiteral(node) {
+      const tagName =
+        node.parent.tag?.name ??
+        node.parent.tag?.object?.name ??
+        node.parent.tag?.callee?.object?.name;
 
       const sqlTagIsPresent = tagName === 'sql';
 
@@ -48,7 +47,11 @@ const create = (context) => {
 
       let formatted = format(literal, context.options[1]);
 
-      if (ignoreStartWithNewLine && literal.startsWith('\n') && !formatted.startsWith('\n')) {
+      if (
+        ignoreStartWithNewLine &&
+        literal.startsWith('\n') &&
+        !formatted.startsWith('\n')
+      ) {
         formatted = '\n' + formatted;
       }
 
@@ -61,15 +64,21 @@ const create = (context) => {
             let index = 0;
 
             while (index <= expressionCount - 1) {
-              final = final.replace(magic, '${' + generate(node.expressions[index]) + '}');
+              final = final.replace(
+                magic,
+                '${' + generate(node.expressions[index]) + '}',
+              );
 
               index++;
             }
 
-            return fixer.replaceTextRange([
-              node.quasis[0].range[0],
-              node.quasis[node.quasis.length - 1].range[1],
-            ], '`\n' + final + '`');
+            return fixer.replaceTextRange(
+              [
+                node.quasis[0].range[0],
+                node.quasis[node.quasis.length - 1].range[1],
+              ],
+              '`\n' + final + '`',
+            );
           },
           message: 'Format the query',
           node,
@@ -83,7 +92,8 @@ export = {
   create,
   meta: {
     docs: {
-      description: 'Matches queries in template literals. Warns when query formatting does not match the configured format (see Options).',
+      description:
+        'Matches queries in template literals. Warns when query formatting does not match the configured format (see Options).',
       url: 'https://github.com/gajus/eslint-plugin-sql#eslint-plugin-sql-rules-format',
     },
     fixable: 'code',

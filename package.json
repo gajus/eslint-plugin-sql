@@ -19,8 +19,8 @@
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.11.9",
     "cspell": "^6.31.1",
-    "eslint": "^8.27.0",
-    "eslint-config-canonical": "37.0.3",
+    "eslint": "^8.39.0",
+    "eslint-config-canonical": "41.0.3",
     "gitdown": "^3.1.5",
     "glob": "^8.0.3",
     "husky": "^8.0.0",
@@ -52,13 +52,13 @@
   },
   "scripts": {
     "build": "npm run documentation && tsc",
-    "documentation-add-assertions": "tsx ./bin/readmeAssertions",
     "documentation": "gitdown ./.README/README.md --output-file ./README.md && npm run documentation-add-assertions",
+    "documentation-add-assertions": "tsx ./bin/readmeAssertions",
     "lint:cspell": "cspell './**/*.{ts,tsx}' --no-progress --gitignore",
     "lint:eslint": "eslint ./src ./test",
     "lint:tsc": "tsc --noEmit",
-    "test:mocha": "mocha --require tsx test/**/*",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:mocha": "mocha --require tsx test/**/*"
   },
   "version": "1.0.1"
 }

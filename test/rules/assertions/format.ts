@@ -62,7 +62,7 @@ export default {
       output: 'sql.type()`\nSELECT\n    3\n`',
     },
     {
-      code: '`SELECT ${\'foo\'} FROM ${\'bar\'}`',
+      code: "`SELECT ${'foo'} FROM ${'bar'}`",
       errors: [
         {
           message: 'Format the query',
@@ -74,7 +74,7 @@ export default {
           ignoreTagless: false,
         },
       ],
-      output: '`\nSELECT\n    ${\'foo\'}\nFROM\n    ${\'bar\'}\n`',
+      output: "`\nSELECT\n    ${'foo'}\nFROM\n    ${'bar'}\n`",
     },
   ],
   valid: [
@@ -95,7 +95,7 @@ export default {
       ],
     },
     {
-      code: '`SELECT ${\'foo\'} FROM ${\'bar\'}`',
+      code: "`SELECT ${'foo'} FROM ${'bar'}`",
       options: [
         {
           ignoreExpressions: true,

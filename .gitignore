@@ -3,7 +3,7 @@ coverage
 dist
 *.log
 .*
-!.eslintrc
+!.eslintrc.js
 !.github
 !.gitignore
 !.husky

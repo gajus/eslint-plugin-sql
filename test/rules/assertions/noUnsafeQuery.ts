@@ -9,7 +9,7 @@ export default {
       ],
     },
     {
-      code: '`SELECT ${\'foo\'}`',
+      code: "`SELECT ${'foo'}`",
       errors: [
         {
           message: 'Use "sql" tag',
@@ -17,7 +17,7 @@ export default {
       ],
     },
     {
-      code: 'foo`SELECT ${\'bar\'}`',
+      code: "foo`SELECT ${'bar'}`",
       errors: [
         {
           message: 'Use "sql" tag',
@@ -51,7 +51,7 @@ export default {
       code: 'sql`SELECT 1`',
     },
     {
-      code: 'sql`SELECT ${\'foo\'}`',
+      code: "sql`SELECT ${'foo'}`",
     },
   ],
 };

@@ -8,7 +8,7 @@ export default (literal: string, ignorePattern?: string): boolean => {
   let maybeSql = literal;
 
   if (ignorePattern) {
-    maybeSql = maybeSql.replace(new RegExp(ignorePattern, 'ug'), 'foo');
+    maybeSql = maybeSql.replaceAll(new RegExp(ignorePattern, 'gu'), 'foo');
   }
 
   try {
