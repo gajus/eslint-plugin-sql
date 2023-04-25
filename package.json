@@ -21,7 +21,6 @@
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
     "eslint": "^8.32.0",
-    "eslint_d": "^12.2.1",
     "eslint-config-canonical": "37.0.3",
     "gitdown": "^3.1.5",
     "glob": "^8.0.3",
@@ -52,8 +51,7 @@
     "build": "tsc",
     "documentation": "gitdown ./.README/README.md --output-file ./README.md && npm run documentation-add-assertions",
     "documentation-add-assertions": "tsx ./bin/readmeAssertions",
-    "lint": "eslint_d --ignore-path .gitignore --ext .ts && tsc --noEmit",
-    "lint:fix": "eslint_d --ignore-path .gitignore --ext .ts . --fix",
+    "lint": "eslint ./src ./test && tsc --noEmit",
     "test": "mocha --require tsx test/**/*"
   },
   "version": "1.0.1"
