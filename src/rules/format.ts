@@ -1,5 +1,9 @@
-import { generate } from 'astring';
-import { format } from 'pg-formatter';
+import {
+  generate,
+} from 'astring';
+import {
+  format,
+} from 'pg-formatter';
 import isSqlQuery from '../utilities/isSqlQuery';
 
 const create = (context) => {
@@ -14,7 +18,7 @@ const create = (context) => {
   const matchIndentation = pluginOptions.matchIndentation !== false;
 
   return {
-    TemplateLiteral(node) {
+    TemplateLiteral (node) {
       const tagName =
         node.parent.tag?.name ??
         node.parent.tag?.object?.name ??
@@ -98,7 +102,7 @@ const create = (context) => {
             while (index <= expressionCount - 1) {
               final = final.replace(
                 magic,
-                '${' + generate(node.expressions[index]) + '}'
+                '${' + generate(node.expressions[index]) + '}',
               );
 
               index++;
@@ -109,11 +113,11 @@ const create = (context) => {
                 node.quasis[0].range[0],
                 node.quasis[node.quasis.length - 1].range[1],
               ],
-              '`' + final + '`'
+              '`' + final + '`',
             );
           },
           message: `${JSON.stringify(
-            literal
+            literal,
           )} should be formatted as ${JSON.stringify(formatted)}.`,
           node,
         });

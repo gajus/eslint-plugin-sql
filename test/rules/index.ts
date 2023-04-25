@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-require-imports */
 
-import { RuleTester } from 'eslint';
-import { camelCase } from 'lodash';
+import {
+  RuleTester,
+} from 'eslint';
+import {
+  camelCase,
+} from 'lodash';
 import plugin from '../../src';
 
 const ruleTester = new RuleTester({
@@ -11,7 +15,10 @@ const ruleTester = new RuleTester({
   },
 });
 
-const reportingRules = ['format', 'no-unsafe-query'];
+const reportingRules = [
+  'format',
+  'no-unsafe-query',
+];
 
 for (const ruleName of reportingRules) {
   const assertions = require('./assertions/' + camelCase(ruleName));

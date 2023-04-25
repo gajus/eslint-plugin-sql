@@ -10,10 +10,12 @@ const defaultOptions = {
 const create = (context) => {
   const placeholderRule = context.settings?.sql?.placeholderRule;
 
-  const { allowLiteral } = context.options[0] ?? defaultOptions;
+  const {
+    allowLiteral,
+  } = context.options[0] ?? defaultOptions;
 
   return {
-    TemplateLiteral(node) {
+    TemplateLiteral (node) {
       if (allowLiteral && node.quasis.length === 1) {
         return;
       }
@@ -34,7 +36,9 @@ const create = (context) => {
         return;
       }
 
-      const { tag } = node.parent;
+      const {
+        tag,
+      } = node.parent;
 
       const tagName =
         node.parent.tag?.name ??

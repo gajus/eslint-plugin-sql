@@ -11,14 +11,14 @@ import glob from 'glob';
 import _ from 'lodash';
 
 type EslintError = {
-  message: string;
+  message: string,
 };
 
 type Setup = {
-  code: string;
-  errors: EslintError[];
-  options: unknown[];
-  output: string;
+  code: string,
+  errors: EslintError[],
+  options: unknown[],
+  output: string,
 };
 
 const formatCodeSnippet = (setup: Setup) => {
@@ -38,7 +38,7 @@ const formatCodeSnippet = (setup: Setup) => {
 
   if (setup.output) {
     paragraphs.push(
-      '// Fixed code: \n// ' + setup.output.split('\n').join('\n// ')
+      '// Fixed code: \n// ' + setup.output.split('\n').join('\n// '),
     );
   }
 
@@ -47,7 +47,7 @@ const formatCodeSnippet = (setup: Setup) => {
 
 const getAssertions = () => {
   const assertionFiles = glob.sync(
-    path.resolve(__dirname, '../test/rules/assertions/*.ts')
+    path.resolve(__dirname, '../test/rules/assertions/*.ts'),
   );
 
   const assertionNames = _.map(assertionFiles, (filePath) => {
@@ -103,7 +103,7 @@ const updateDocuments = (assertions) => {
       }
 
       return exampleBody;
-    }
+    },
   );
 
   fs.writeFileSync(readmeDocumentPath, documentBody);
