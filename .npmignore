@@ -1,8 +1,0 @@
-src
-bin
-!/dist/src
-test
-coverage
-*.tgz
-.*
-*.log

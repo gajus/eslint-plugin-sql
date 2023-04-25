@@ -30,6 +30,9 @@
   "engines": {
     "node": ">=12"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "eslint",
     "plugin",

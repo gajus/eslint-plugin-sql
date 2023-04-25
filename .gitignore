@@ -7,6 +7,5 @@ dist
 !.eslintrc
 !.github
 !.gitignore
-!.npmignore
 !.README
 !.releaserc
