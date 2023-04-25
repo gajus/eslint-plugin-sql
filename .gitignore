@@ -3,7 +3,6 @@ coverage
 dist
 *.log
 .*
-!.babelrc
 !.eslintrc
 !.github
 !.gitignore
