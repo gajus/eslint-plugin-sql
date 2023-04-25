@@ -51,11 +51,12 @@
   },
   "scripts": {
     "build": "npm run documentation && tsc",
-    "documentation": "gitdown ./.README/README.md --output-file ./README.md && npm run documentation-add-assertions",
     "documentation-add-assertions": "tsx ./bin/readmeAssertions",
-    "lint": "eslint ./src ./test && tsc --noEmit",
+    "documentation": "gitdown ./.README/README.md --output-file ./README.md && npm run documentation-add-assertions",
     "lint:cspell": "cspell './**/*.{ts,tsx}' --no-progress --gitignore",
-    "test": "mocha --require tsx test/**/*"
+    "lint:eslint": "eslint ./src ./test",
+    "lint:tsc": "tsc --noEmit",
+    "test:mocha": "mocha --require tsx test/**/*"
   },
   "version": "1.0.1"
 }

@@ -13,9 +13,10 @@ jobs:
         with:
           node-version: "18"
       - run: npm install
-      - run: npm run lint
+      - run: npm run lint:eslint
+      - run: npm run lint:tsc
       - run: npm run lint:cspell
-      - run: npm run test
+      - run: npm run test:mocha
       - run: npm run build
     timeout-minutes: 10
 name: Test and build
