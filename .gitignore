@@ -7,5 +7,6 @@ dist
 !.eslintrc
 !.github
 !.gitignore
+!.husky
 !.README
 !.releaserc
