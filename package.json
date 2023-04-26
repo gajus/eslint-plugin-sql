@@ -26,8 +26,8 @@
     "husky": "^8.0.0",
     "mocha": "^10.1.0",
     "semantic-release": "^19.0.5",
-    "tsx": "^3.12.1",
-    "typescript": "^4.9.3"
+    "tsx": "^3.12.6",
+    "typescript": "^5.0.4"
   },
   "engines": {
     "node": ">=12"
