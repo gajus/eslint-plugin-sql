@@ -135,7 +135,7 @@ export = {
             default: 'lowercase',
             type: 'string',
           },
-          keywordsCase: {
+          keywordCase: {
             default: 'lowercase',
             type: 'string',
           },
