@@ -15,4 +15,7 @@ describe('isSqlQuery', () => {
     assert(!isSqlQuery('foo bar'));
     assert(!isSqlQuery('foo SELECT FROM bar'));
   });
+  it('ignores falsy values', () => {
+    assert(!isSqlQuery(''));
+  });
 });

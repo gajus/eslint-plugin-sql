@@ -53,5 +53,8 @@ export default {
     {
       code: "sql`SELECT ${'foo'}`",
     },
+    {
+      code: 'sql``',
+    },
   ],
 };

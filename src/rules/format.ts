@@ -1,3 +1,4 @@
+import { indentString, stripIndent } from '../utilities/indent';
 import isSqlQuery from '../utilities/isSqlQuery';
 import { generate } from 'astring';
 import { format } from 'pg-formatter';
@@ -11,6 +12,7 @@ const create = (context) => {
   const ignoreInline = pluginOptions.ignoreInline !== false;
   const ignoreTagless = pluginOptions.ignoreTagless !== false;
   const ignoreStartWithNewLine = pluginOptions.ignoreStartWithNewLine !== false;
+  const matchIndentation = pluginOptions.matchIndentation !== false;
 
   return {
     TemplateLiteral(node) {
@@ -41,18 +43,49 @@ const create = (context) => {
         return;
       }
 
-      if (ignoreInline && !literal.includes('\n')) {
+      const eolMatch = literal.match(/\r?\n/u);
+      if (ignoreInline && !eolMatch) {
         return;
       }
 
-      let formatted = format(literal, context.options[1]);
+      const [eol = '\n'] = eolMatch || [];
 
-      if (
-        ignoreStartWithNewLine &&
-        literal.startsWith('\n') &&
-        !formatted.startsWith('\n')
-      ) {
-        formatted = '\n' + formatted;
+      const sourceCode = context.getSourceCode();
+      const startLine = sourceCode.lines[node.loc.start.line - 1];
+      const marginMatch = startLine.match(/^(\s*)\S/u);
+      const parentMargin = marginMatch ? marginMatch[1] : '';
+
+      const pgFormatterOptions = { ...context.options[1] };
+      const { tabs, spaces = 4 } = pgFormatterOptions;
+
+      const indent = tabs ? `\t` : ' '.repeat(spaces || 4);
+      let formatted = format(literal, pgFormatterOptions).trim();
+
+      if (matchIndentation) {
+        const stripped = stripIndent(formatted);
+        const trimmed = stripped.replaceAll(
+          new RegExp(`^${eol}|${eol}[ \t]*$`, 'gu'),
+          '',
+        );
+        const formattedLines = trimmed.split(eol);
+        const indented =
+          formattedLines
+            .map((line) => {
+              return parentMargin + indentString(line, 1, { indent });
+            })
+            .join(eol) +
+          // The last line has an eol to make the backtick line up
+          eol +
+          parentMargin;
+
+        formatted = indented;
+      }
+
+      const shouldPrependEol =
+        ignoreStartWithNewLine && literal.startsWith(eol);
+
+      if (shouldPrependEol && !formatted.startsWith(eol)) {
+        formatted = eol + formatted;
       }
 
       if (formatted !== literal) {
@@ -77,7 +110,9 @@ const create = (context) => {
                 node.quasis[0].range[0],
                 node.quasis[node.quasis.length - 1].range[1],
               ],
-              '`\n' + final + '`',
+              `\`${shouldPrependEol && formatted.startsWith(eol) ? '' : '\n'}` +
+                final +
+                '`',
             );
           },
           message: 'Format the query',
@@ -114,6 +149,10 @@ export = {
             type: 'boolean',
           },
           ignoreTagless: {
+            default: true,
+            type: 'boolean',
+          },
+          matchIndentation: {
             default: true,
             type: 'boolean',
           },
