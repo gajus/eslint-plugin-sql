@@ -76,6 +76,21 @@ export default {
       ],
       output: "`\nSELECT\n    ${'foo'}\nFROM\n    ${'bar'}\n`",
     },
+    {
+      code: "    const code = sql`\n    SELECT\n        ${'foo'}\n    FROM\n        ${'bar'}\n`",
+      errors: [
+        {
+          message: 'Format the query',
+        },
+      ],
+      options: [
+        {
+          ignoreBaseIndent: false,
+        },
+      ],
+      output:
+        "    const code = sql`\nSELECT\n    ${'foo'}\nFROM\n    ${'bar'}\n`",
+    },
   ],
   valid: [
     {
@@ -101,6 +116,14 @@ export default {
           ignoreExpressions: true,
           ignoreInline: false,
           ignoreTagless: false,
+        },
+      ],
+    },
+    {
+      code: "    const code = sql`\n    SELECT\n        ${'foo'}\n    FROM\n        ${'bar'}\n`",
+      options: [
+        {
+          ignoreBaseIndent: true,
         },
       ],
     },
