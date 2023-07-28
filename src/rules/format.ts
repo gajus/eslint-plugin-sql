@@ -77,7 +77,7 @@ const create = (context) => {
                 node.quasis[0].range[0],
                 node.quasis[node.quasis.length - 1].range[1],
               ],
-              '`\n' + final + '`',
+              '`' + (final.startsWith('\n') ? final : '\n' + final) + '`',
             );
           },
           message: 'Format the query',
