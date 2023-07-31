@@ -1,6 +1,7 @@
 import isSqlQuery from '../utilities/isSqlQuery';
 import { generate } from 'astring';
 import { format } from 'pg-formatter';
+import stripIndent from 'strip-indent';
 
 const create = (context) => {
   const placeholderRule = context.settings?.sql?.placeholderRule;
@@ -11,6 +12,7 @@ const create = (context) => {
   const ignoreInline = pluginOptions.ignoreInline !== false;
   const ignoreTagless = pluginOptions.ignoreTagless !== false;
   const ignoreStartWithNewLine = pluginOptions.ignoreStartWithNewLine !== false;
+  const ignoreBaseIndent = pluginOptions.ignoreBaseIndent === true;
 
   return {
     TemplateLiteral(node) {
@@ -31,7 +33,7 @@ const create = (context) => {
 
       const magic = '"gajus-eslint-plugin-sql"';
 
-      const literal = node.quasis
+      let literal = node.quasis
         .map((quasi) => {
           return quasi.value.raw;
         })
@@ -43,6 +45,10 @@ const create = (context) => {
 
       if (ignoreInline && !literal.includes('\n')) {
         return;
+      }
+
+      if (ignoreBaseIndent) {
+        literal = stripIndent(literal);
       }
 
       let formatted = format(literal, context.options[1]);
@@ -77,7 +83,7 @@ const create = (context) => {
                 node.quasis[0].range[0],
                 node.quasis[node.quasis.length - 1].range[1],
               ],
-              '`\n' + final + '`',
+              '`' + (final.startsWith('\n') ? final : '\n' + final) + '`',
             );
           },
           message: 'Format the query',
@@ -101,6 +107,10 @@ export = {
       {
         additionalProperties: false,
         properties: {
+          ignoreBaseIndent: {
+            default: false,
+            type: 'boolean',
+          },
           ignoreExpressions: {
             default: false,
             type: 'boolean',
