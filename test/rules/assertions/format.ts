@@ -120,7 +120,7 @@ export default {
       ],
     },
     {
-      code: "    const code = sql`\n    SELECT\n        ${'foo'}\n    FROM\n        ${'bar'}\n`",
+      code: "    const code = sql`\n    SELECT\n        ${'foo'}\n    FROM\n        ${'bar'}\n    `",
       options: [
         {
           ignoreBaseIndent: true,

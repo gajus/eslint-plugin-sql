@@ -7,10 +7,10 @@
   "dependencies": {
     "astring": "^1.8.3",
     "debug": "^4.3.4",
+    "dedent": "^1.5.1",
     "lodash": "^4.17.21",
     "pg-formatter": "^2.0.2",
-    "sql-parse": "^0.1.5",
-    "strip-indent": "^3.0.0"
+    "sql-parse": "^0.1.5"
   },
   "description": "SQL linting rules for ESLint.",
   "devDependencies": {
