@@ -1,7 +1,7 @@
 import isSqlQuery from '../utilities/isSqlQuery';
 import { generate } from 'astring';
 import { format } from 'pg-formatter';
-import stripIndent from 'strip-indent';
+import redent from 'redent';
 
 const create = (context) => {
   const placeholderRule = context.settings?.sql?.placeholderRule;
@@ -48,7 +48,7 @@ const create = (context) => {
       }
 
       if (ignoreBaseIndent) {
-        literal = stripIndent(literal);
+        literal = redent(literal);
       }
 
       let formatted = format(literal, context.options[1]);
