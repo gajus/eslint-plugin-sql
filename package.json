@@ -9,7 +9,7 @@
     "debug": "^4.3.4",
     "lodash": "^4.17.21",
     "pg-formatter": "^2.0.2",
-    "redent": "^4.0.0",
+    "redent": "^3.0.0",
     "sql-parse": "^0.1.5"
   },
   "description": "SQL linting rules for ESLint.",
