@@ -14,5 +14,6 @@ The first option is an object with the following configuration.
 |configuration|format|default|description|
 |---|---|---|---|
 |`allowLiteral`|boolean|`false`|Controls whether `sql` tag is required for template literals containing literal queries, i.e. template literals without expressions.|
+|`sqlTag`|string|`sql`|Template tag name for SQL.|
 
 <!-- assertions noUnsafeQuery -->

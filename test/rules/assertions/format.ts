@@ -91,6 +91,21 @@ export default {
       output:
         "    const code = sql`\nSELECT\n    ${'foo'}\nFROM\n    ${'bar'}\n`",
     },
+    {
+      code: 'SQL`SELECT 1`',
+      errors: [
+        {
+          message: 'Format the query',
+        },
+      ],
+      options: [
+        {
+          ignoreInline: false,
+          sqlTag: 'SQL',
+        },
+      ],
+      output: 'SQL`\nSELECT\n    1\n`',
+    },
   ],
   valid: [
     {

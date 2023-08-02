@@ -5,12 +5,17 @@ const debug = createDebug('eslint-plugin-sql:rule:no-unsafe-query');
 
 const defaultOptions = {
   allowLiteral: false,
+  sqlTag: 'sql',
 };
 
 const create = (context) => {
   const placeholderRule = context.settings?.sql?.placeholderRule;
 
-  const { allowLiteral } = context.options[0] ?? defaultOptions;
+  const pluginOptions = context.options?.[0] || {};
+
+  const sqlTag = pluginOptions.sqlTag ?? defaultOptions.sqlTag;
+  const allowLiteral =
+    pluginOptions.allowLiteral ?? defaultOptions.allowLiteral;
 
   return {
     TemplateLiteral(node) {
@@ -43,9 +48,9 @@ const create = (context) => {
 
       const legacyTagName = tag?.name.toLowerCase();
 
-      if (legacyTagName !== 'sql' && tagName !== 'sql') {
+      if (legacyTagName !== sqlTag && tagName !== sqlTag) {
         context.report({
-          message: 'Use "sql" tag',
+          message: `Use "${sqlTag}" tag`,
           node,
         });
       }
@@ -69,6 +74,10 @@ export = {
           allowLiteral: {
             default: false,
             type: 'boolean',
+          },
+          sqlTag: {
+            default: 'sql',
+            type: 'string',
           },
         },
         type: 'object',
