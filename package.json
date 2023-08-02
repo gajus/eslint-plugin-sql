@@ -7,9 +7,9 @@
   "dependencies": {
     "astring": "^1.8.3",
     "debug": "^4.3.4",
+    "deindent": "^0.1.0",
     "lodash": "^4.17.21",
     "pg-formatter": "^2.0.2",
-    "redent": "^3.0.0",
     "sql-parse": "^0.1.5"
   },
   "description": "SQL linting rules for ESLint.",
@@ -17,6 +17,7 @@
     "@semantic-release/commit-analyzer": "^9.0.2",
     "@semantic-release/github": "^8.0.7",
     "@semantic-release/npm": "^10.0.3",
+    "@types/deindent": "^0.1.0",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.11.9",
     "cspell": "^6.31.1",
