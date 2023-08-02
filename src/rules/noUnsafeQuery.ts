@@ -34,14 +34,12 @@ const create = (context) => {
         return;
       }
 
-      const { tag } = node.parent;
-
       const tagName =
         node.parent.tag?.name ??
         node.parent.tag?.object?.name ??
         node.parent.tag?.callee?.object?.name;
 
-      const legacyTagName = tag?.name.toLowerCase();
+      const legacyTagName = node.parent.name?.toLowerCase();
 
       if (legacyTagName !== 'sql' && tagName !== 'sql') {
         context.report({
