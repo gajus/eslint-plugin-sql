@@ -127,5 +127,13 @@ export default {
         },
       ],
     },
+    {
+      code: '   const code = sql`\n        DROP TABLE foo\n    `;',
+      options: [
+        {
+          ignoreBaseIndent: true,
+        },
+      ],
+    },
   ],
 };
