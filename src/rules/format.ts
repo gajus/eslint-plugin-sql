@@ -1,6 +1,6 @@
+import dropBaseIndent from '../utilities/dropBaseIndent';
 import isSqlQuery from '../utilities/isSqlQuery';
 import { generate } from 'astring';
-import deindent from 'deindent';
 import { format } from 'pg-formatter';
 
 const create = (context) => {
@@ -48,7 +48,7 @@ const create = (context) => {
       }
 
       if (ignoreBaseIndent) {
-        literal = deindent(literal);
+        literal = dropBaseIndent(literal);
       }
 
       let formatted = format(literal, context.options[1]);
@@ -59,6 +59,10 @@ const create = (context) => {
         !formatted.startsWith('\n')
       ) {
         formatted = '\n' + formatted;
+      }
+
+      if (formatted.endsWith('\n\n')) {
+        formatted = formatted.replace(/\n\n$/u, '\n');
       }
 
       if (formatted !== literal) {
