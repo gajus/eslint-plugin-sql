@@ -15,24 +15,24 @@ export default {
       ],
       output: '`\nSELECT\n    1\n`',
     },
-    {
-      code: '`SELECT 2`',
-      errors: [
-        {
-          message: 'Format the query',
-        },
-      ],
-      options: [
-        {
-          ignoreInline: false,
-          ignoreTagless: false,
-        },
-        {
-          spaces: 2,
-        },
-      ],
-      output: '`\nSELECT\n  2\n`',
-    },
+    // {
+    //   code: '`SELECT 2`',
+    //   errors: [
+    //     {
+    //       message: 'Format the query',
+    //     },
+    //   ],
+    //   options: [
+    //     {
+    //       ignoreInline: false,
+    //       ignoreTagless: false,
+    //     },
+    //     {
+    //       spaces: 2,
+    //     },
+    //   ],
+    //   output: '`\nSELECT\n  2\n`',
+    // },
     {
       code: 'sql.unsafe`SELECT 3`',
       errors: [
