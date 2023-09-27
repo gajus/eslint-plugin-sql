@@ -40,6 +40,9 @@ export default {
   ],
   valid: [
     {
+      code: 'sql.unsafe`SELECT 3`',
+    },
+    {
       code: '`SELECT 1`',
       options: [
         {
