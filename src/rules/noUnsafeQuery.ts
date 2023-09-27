@@ -44,7 +44,7 @@ const create = (context) => {
         node.parent.tag?.object?.name ??
         node.parent.tag?.callee?.object?.name;
 
-      const legacyTagName = node.parent.name?.toLowerCase();
+      const legacyTagName = node.parent?.name?.toLowerCase();
 
       if (legacyTagName !== sqlTag && tagName !== sqlTag) {
         context.report({
