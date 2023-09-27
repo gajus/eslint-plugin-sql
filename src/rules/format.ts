@@ -155,7 +155,7 @@ export = {
             type: 'string',
           },
           keywordCase: {
-            default: 'lowercase',
+            default: 'uppercase',
             type: 'string',
           },
           noRcFile: {
