@@ -15,8 +15,9 @@ The first option is an object with the following configuration.
 |`ignoreBaseIndent`|boolean|`false`|Does not leave base indent before linting.|
 |`ignoreExpressions`|boolean|`false`|Does not format template literals that contain expressions.|
 |`ignoreInline`|boolean|`true`|Does not format queries that are written on a single line.|
-|`ignoreTagless`|boolean|`true`|Does not format queries that are written without using `sql` tag.|
 |`ignoreStartWithNewLine`|boolean|`true`|Does not remove `\n` at the beginning of queries.|
+|`ignoreTagless`|boolean|`true`|Does not format queries that are written without using `sql` tag.|
+|`sqlTag`|string|`sql`|Template tag name for SQL.|
 
 The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).
 

@@ -37,6 +37,19 @@ export default {
         },
       },
     },
+    {
+      code: "foo`SELECT ${'bar'}`",
+      errors: [
+        {
+          message: 'Use "SQL" tag',
+        },
+      ],
+      options: [
+        {
+          sqlTag: 'SQL',
+        },
+      ],
+    },
   ],
   valid: [
     {
@@ -55,6 +68,14 @@ export default {
     },
     {
       code: "sql`SELECT ${'foo'}`",
+    },
+    {
+      code: "SQL`SELECT ${'bar'}`",
+      options: [
+        {
+          sqlTag: 'SQL',
+        },
+      ],
     },
   ],
 };

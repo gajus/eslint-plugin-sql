@@ -8,6 +8,7 @@ const create = (context) => {
 
   const pluginOptions = context.options?.[0] || {};
 
+  const sqlTag = pluginOptions.sqlTag;
   const ignoreExpressions = pluginOptions.ignoreExpressions === true;
   const ignoreInline = pluginOptions.ignoreInline !== false;
   const ignoreTagless = pluginOptions.ignoreTagless !== false;
@@ -21,7 +22,7 @@ const create = (context) => {
         node.parent.tag?.object?.name ??
         node.parent.tag?.callee?.object?.name;
 
-      const sqlTagIsPresent = tagName === 'sql';
+      const sqlTagIsPresent = tagName === sqlTag;
 
       if (ignoreTagless && !sqlTagIsPresent) {
         return;
@@ -130,6 +131,10 @@ export = {
           ignoreTagless: {
             default: true,
             type: 'boolean',
+          },
+          sqlTag: {
+            default: 'sql',
+            type: 'string',
           },
         },
         type: 'object',
