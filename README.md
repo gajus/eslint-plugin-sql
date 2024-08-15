@@ -63,6 +63,11 @@ npm install eslint-plugin-sql --save-dev
         "allowLiteral": false
       }
     ]
+  },
+  "settings": {
+    "sql": {
+      "placeholderRule": "\\?"
+    }
   }
 }
 
