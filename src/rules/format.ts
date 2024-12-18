@@ -8,7 +8,7 @@ const create = (context) => {
 
   const pluginOptions = context.options?.[0] || {};
 
-  const sqlTag = pluginOptions.sqlTag;
+  const sqlTag = pluginOptions.sqlTag ?? 'sql';
   const ignoreExpressions = pluginOptions.ignoreExpressions === true;
   const ignoreInline = pluginOptions.ignoreInline !== false;
   const ignoreTagless = pluginOptions.ignoreTagless !== false;

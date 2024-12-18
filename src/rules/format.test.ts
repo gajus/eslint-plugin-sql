@@ -1,5 +1,6 @@
 import { createRuleTester } from '../factories/createRuleTester';
 import rule from './format';
+import multiline from 'multiline-ts';
 
 export default createRuleTester(
   'format',
@@ -115,6 +116,15 @@ export default createRuleTester(
       },
     ],
     valid: [
+      {
+        code: multiline`
+          \`
+          # A
+          ## B
+          ### C
+          \`
+        `,
+      },
       {
         code: 'sql`SELECT 1`',
         options: [
