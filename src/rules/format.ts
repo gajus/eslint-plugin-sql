@@ -3,7 +3,7 @@ import { dropBaseIndent } from '../utilities/dropBaseIndent';
 import { isSqlQuery } from '../utilities/isSqlQuery';
 import { AST_NODE_TYPES } from '@typescript-eslint/utils';
 import { generate } from 'astring';
-import { format } from 'pg-formatter';
+import { format } from 'sql-formatter';
 
 type MessageIds = 'format';
 
@@ -17,14 +17,28 @@ type Options = [
     sqlTag?: string;
   },
   {
-    anonymize?: boolean;
-    commaBreak?: boolean;
-    functionCase?: 'lowercase' | 'uppercase';
-    keywordCase?: 'lowercase' | 'uppercase';
-    noRcFile?: boolean;
-    spaces?: number;
-    stripComments?: boolean;
-    tabs?: boolean;
+    language?:
+      | 'bigquery'
+      | 'db2'
+      | 'db2i'
+      | 'hive'
+      | 'mariadb'
+      | 'mysql'
+      | 'n1ql'
+      | 'plsql'
+      | 'postgresql'
+      | 'redshift'
+      | 'singlestoredb'
+      | 'snowflake'
+      | 'spark'
+      | 'sql'
+      | 'sqlite'
+      | 'tidb'
+      | 'transactsql'
+      | 'trino'
+      | 'tsql';
+    tabWidth?: number;
+    useTabs?: boolean;
   },
 ];
 
@@ -70,7 +84,7 @@ export const rule = createRule<Options, MessageIds>({
       sqlTag,
     } = pluginOptions;
 
-    const spaces = context.options?.[1]?.spaces ?? 2;
+    const tabWidth = context.options?.[1]?.tabWidth ?? 2;
 
     return {
       TemplateLiteral(node) {
@@ -97,7 +111,7 @@ export const rule = createRule<Options, MessageIds>({
         );
 
         if (templateElement.value.raw.search(/\S/u) === 0) {
-          indentAnchorOffset = spaces;
+          indentAnchorOffset = tabWidth;
         }
 
         if (ignoreTagless && !sqlTagIsPresent) {
@@ -110,7 +124,7 @@ export const rule = createRule<Options, MessageIds>({
 
         const magic = '"gajus-eslint-plugin-sql"';
 
-        let literal = node.quasis
+        const literal = node.quasis
           .map((quasi) => {
             return quasi.value.raw;
           })
@@ -124,10 +138,14 @@ export const rule = createRule<Options, MessageIds>({
           return;
         }
 
+        // console.log('literal', literal);
+
         let formatted = format(literal, {
           ...context.options[1],
-          spaces,
+          tabWidth,
         });
+
+        // console.log('formatted', formatted);
 
         if (
           ignoreStartWithNewLine &&
@@ -144,8 +162,11 @@ export const rule = createRule<Options, MessageIds>({
         if (retainBaseIndent) {
           formatted = padIndent(formatted, indentAnchorOffset);
         } else {
-          literal = dropBaseIndent(literal);
+          formatted = dropBaseIndent(literal);
         }
+
+        formatted +=
+          '\n' + ' '.repeat(Math.max(indentAnchorOffset - tabWidth, 0));
 
         if (formatted !== literal) {
           context.report({
@@ -189,14 +210,7 @@ export const rule = createRule<Options, MessageIds>({
       sqlTag: 'sql',
     },
     {
-      anonymize: false,
-      commaBreak: false,
-      functionCase: 'lowercase',
-      keywordCase: 'uppercase',
-      noRcFile: false,
-      spaces: 2,
-      stripComments: false,
-      tabs: false,
+      tabWidth: 2,
     },
   ],
   meta: {
@@ -243,34 +257,15 @@ export const rule = createRule<Options, MessageIds>({
       {
         additionalProperties: false,
         properties: {
-          anonymize: {
-            default: false,
-            type: 'boolean',
-          },
-          commaBreak: {
-            default: false,
-            type: 'boolean',
-          },
-          functionCase: {
-            default: 'lowercase',
+          language: {
+            default: 'sql',
             type: 'string',
           },
-          keywordCase: {
-            default: 'uppercase',
-            type: 'string',
-          },
-          noRcFile: {
-            default: false,
-            type: 'boolean',
-          },
-          spaces: {
+          tabWidth: {
+            default: 2,
             type: 'number',
           },
-          stripComments: {
-            default: false,
-            type: 'boolean',
-          },
-          tabs: {
+          useTabs: {
             default: false,
             type: 'boolean',
           },

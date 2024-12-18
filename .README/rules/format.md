@@ -4,7 +4,7 @@ _The `--fix` option on the command line automatically fixes problems reported by
 
 Matches queries in template literals. Warns when query formatting does not match the configured format (see Options).
 
-This rule is used to format the queries using [pg-formatter](https://github.com/gajus/pg-formatter).
+This rule is used to format the queries using [sql-formatter](https://github.com/sql-formatter-org/sql-formatter).
 
 #### Options
 
@@ -19,6 +19,12 @@ The first option is an object with the following configuration.
 |`retainBaseIndent`|boolean|`true`|Uses the first line of the query as the base indent.|
 |`sqlTag`|string|`sql`|Template tag name for SQL.|
 
-The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).
+The second option is an object with the [`sql-formatter` configuration](https://github.com/sql-formatter-org/sql-formatter?tab=readme-ov-file#configuration-options).
+
+|configuration|default|description|
+|---|---|---|
+|`useTabs`|boolean|`false`|Use tabs for indentation.|
+|`tabSize`|2|Number of spaces per indentation.|
+|`language`|`sql`|Language of the query.|
 
 <!-- assertions format -->

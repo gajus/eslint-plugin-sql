@@ -95,7 +95,7 @@ _The `--fix` option on the command line automatically fixes problems reported by
 
 Matches queries in template literals. Warns when query formatting does not match the configured format (see Options).
 
-This rule is used to format the queries using [pg-formatter](https://github.com/gajus/pg-formatter).
+This rule is used to format the queries using [sql-formatter](https://github.com/sql-formatter-org/sql-formatter).
 
 <a name="user-content-eslint-plugin-sql-rules-format-options"></a>
 <a name="eslint-plugin-sql-rules-format-options"></a>
@@ -112,7 +112,13 @@ The first option is an object with the following configuration.
 |`retainBaseIndent`|boolean|`true`|Uses the first line of the query as the base indent.|
 |`sqlTag`|string|`sql`|Template tag name for SQL.|
 
-The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).
+The second option is an object with the [`sql-formatter` configuration](https://github.com/sql-formatter-org/sql-formatter?tab=readme-ov-file#configuration-options).
+
+|configuration|default|description|
+|---|---|---|
+|`useTabs`|boolean|`false`|Use tabs for indentation.|
+|`tabSize`|2|Number of spaces per indentation.|
+|`language`|`sql`|Language of the query.|
 
 The following patterns are considered problems:
 
@@ -121,7 +127,7 @@ sql`
   SELECT
     1
 `
-// Options: [{},{"spaces":4}]
+// Options: [{},{"tabWidth":4}]
 // Message: undefined
 // Fixed code: 
 // sql`
@@ -133,7 +139,7 @@ sql.type({ id: z.number() })`
   SELECT
     1
 `
-// Options: [{},{"spaces":4}]
+// Options: [{},{"tabWidth":4}]
 // Message: undefined
 // Fixed code: 
 // sql.type({ id: z.number() })`
@@ -145,7 +151,7 @@ sql.typeAlias('void')`
   SELECT
     1
 `
-// Options: [{},{"spaces":4}]
+// Options: [{},{"tabWidth":4}]
 // Message: undefined
 // Fixed code: 
 // sql.typeAlias('void')`
@@ -163,7 +169,7 @@ sql.typeAlias('void')`
 // `
 
 `SELECT 2`
-// Options: [{"ignoreInline":false,"ignoreTagless":false},{"spaces":2}]
+// Options: [{"ignoreInline":false,"ignoreTagless":false},{"tabWidth":2}]
 // Message: undefined
 // Fixed code: 
 // `

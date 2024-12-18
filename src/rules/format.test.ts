@@ -23,7 +23,7 @@ export default createRuleTester(
         options: [
           {},
           {
-            spaces: 4,
+            tabWidth: 4,
           },
         ],
         output: multiline`
@@ -48,7 +48,7 @@ export default createRuleTester(
         options: [
           {},
           {
-            spaces: 4,
+            tabWidth: 4,
           },
         ],
         output: multiline`
@@ -73,7 +73,7 @@ export default createRuleTester(
         options: [
           {},
           {
-            spaces: 4,
+            tabWidth: 4,
           },
         ],
         output: multiline`
@@ -117,7 +117,7 @@ export default createRuleTester(
             ignoreTagless: false,
           },
           {
-            spaces: 2,
+            tabWidth: 2,
           },
         ],
         output: multiline`

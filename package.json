@@ -10,7 +10,7 @@
     "debug": "^4.4.0",
     "lodash": "^4.17.21",
     "multiline-ts": "^4.0.1",
-    "pg-formatter": "^2.0.8",
+    "sql-formatter": "^15.4.6",
     "sql-parse": "^0.1.5"
   },
   "description": "SQL linting rules for ESLint.",
