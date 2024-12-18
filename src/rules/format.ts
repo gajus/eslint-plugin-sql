@@ -2,7 +2,6 @@ import { createRule } from '../factories/createRule';
 import { dropBaseIndent } from '../utilities/dropBaseIndent';
 import { isSqlQuery } from '../utilities/isSqlQuery';
 import { AST_NODE_TYPES } from '@typescript-eslint/utils';
-import { generate } from 'astring';
 import { format } from 'sql-formatter';
 
 type MessageIds = 'format';
@@ -174,12 +173,15 @@ export const rule = createRule<Options, MessageIds>({
               let final = formatted;
 
               const expressionCount = node.expressions.length;
+
               let index = 0;
 
               while (index <= expressionCount - 1) {
                 final = final.replace(
                   magic,
-                  '${' + generate(node.expressions[index]) + '}',
+                  '${' +
+                    context.sourceCode.getText(node.expressions[index]) +
+                    '}',
                 );
 
                 index++;

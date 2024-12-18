@@ -10,6 +10,36 @@ export default createRuleTester(
     invalid: [
       {
         code: multiline`
+          await pool.query(sql.typeAlias('void')\`
+            UPDATE assistant_response
+            SET
+              messages = \${sql.jsonb(pickedMessages as unknown as SerializableValue[])}
+            WHERE id = \${assistantResponse.id}
+          \`);
+        `,
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
+        options: [
+          {},
+          {
+            tabWidth: 4,
+          },
+        ],
+        output: multiline`
+          await pool.query(sql.typeAlias('void')\`
+            UPDATE assistant_response
+            SET
+                messages = \${sql.jsonb(pickedMessages as unknown as SerializableValue[])}
+            WHERE
+                id = \${assistantResponse.id}
+          \`);
+        `,
+      },
+      {
+        code: multiline`
           sql\`
             SELECT
               1
