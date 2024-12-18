@@ -12,6 +12,7 @@ The first option is an object with the following configuration.
 
 |configuration|format|default|description|
 |---|---|---|---|
+|`padIndent`|boolean|`false`|Aligns indentation with either the start of the `TemplateLiteral` or `TaggedTemplateExpression` node.|
 |`ignoreBaseIndent`|boolean|`false`|Does not leave base indent before linting.|
 |`ignoreExpressions`|boolean|`false`|Does not format template literals that contain expressions.|
 |`ignoreInline`|boolean|`true`|Does not format queries that are written on a single line.|

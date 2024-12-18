@@ -35,6 +35,33 @@ export default createRuleTester(
       },
       {
         code: multiline`
+          sql\`
+          SELECT
+            1
+          \`
+        `,
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
+        options: [
+          {
+            alignIndent: true,
+          },
+          {
+            spaces: 4,
+          },
+        ],
+        output: multiline`
+          sql\`
+              SELECT
+                  1
+          \`
+        `,
+      },
+      {
+        code: multiline`
           sql.type({ id: z.number() })\`
           SELECT
             1
