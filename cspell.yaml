@@ -10,3 +10,7 @@ words:
   - gitdown
   - astring
   - quasis
+  - singlestoredb
+  - tidb
+  - transactsql
+  - trino
