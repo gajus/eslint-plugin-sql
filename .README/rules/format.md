@@ -12,12 +12,11 @@ The first option is an object with the following configuration.
 
 |configuration|format|default|description|
 |---|---|---|---|
-|`padIndent`|boolean|`false`|Aligns indentation with either the start of the `TemplateLiteral` or `TaggedTemplateExpression` node.|
-|`ignoreBaseIndent`|boolean|`false`|Does not leave base indent before linting.|
 |`ignoreExpressions`|boolean|`false`|Does not format template literals that contain expressions.|
 |`ignoreInline`|boolean|`true`|Does not format queries that are written on a single line.|
 |`ignoreStartWithNewLine`|boolean|`true`|Does not remove `\n` at the beginning of queries.|
 |`ignoreTagless`|boolean|`true`|Does not format queries that are written without using `sql` tag.|
+|`retainBaseIndent`|boolean|`true`|Uses the first line of the query as the base indent.|
 |`sqlTag`|string|`sql`|Template tag name for SQL.|
 
 The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).

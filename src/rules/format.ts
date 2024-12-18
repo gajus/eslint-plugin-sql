@@ -9,12 +9,11 @@ type MessageIds = 'format';
 
 type Options = [
   {
-    alignIndent?: boolean;
-    ignoreBaseIndent?: boolean;
     ignoreExpressions?: boolean;
     ignoreInline?: boolean;
     ignoreStartWithNewLine?: boolean;
     ignoreTagless?: boolean;
+    retainBaseIndent?: boolean;
     sqlTag?: string;
   },
   {
@@ -38,23 +37,40 @@ const padIndent = (subject: string, spaces: number) => {
     .join('\n');
 };
 
+const findFirstMeaningfulIndent = (subject: string) => {
+  for (const line of subject.split('\n')) {
+    if (line.trim().length > 0) {
+      return line.search(/\S/u);
+    }
+  }
+
+  return 0;
+};
+
 export const rule = createRule<Options, MessageIds>({
   create: (context) => {
     // @ts-expect-error I am ont clear how to type this
     const placeholderRule = context.settings?.sql?.placeholderRule;
 
-    const pluginOptions = context.options?.[0] || {};
+    const pluginOptions = context.options?.[0] || {
+      ignoreExpressions: false,
+      ignoreInline: true,
+      ignoreStartWithNewLine: true,
+      ignoreTagless: true,
+      retainBaseIndent: true,
+      sqlTag: 'sql',
+    };
 
-    const alignIndent = pluginOptions.alignIndent === true;
-    const sqlTag = pluginOptions.sqlTag ?? 'sql';
-    const ignoreExpressions = pluginOptions.ignoreExpressions === true;
-    const ignoreInline = pluginOptions.ignoreInline !== false;
-    const ignoreTagless = pluginOptions.ignoreTagless !== false;
-    const ignoreStartWithNewLine =
-      pluginOptions.ignoreStartWithNewLine !== false;
-    const ignoreBaseIndent = pluginOptions.ignoreBaseIndent === true;
+    const {
+      ignoreExpressions,
+      ignoreInline,
+      ignoreStartWithNewLine,
+      ignoreTagless,
+      retainBaseIndent,
+      sqlTag,
+    } = pluginOptions;
 
-    const spaces = context.options?.[1]?.spaces ?? 4;
+    const spaces = context.options?.[1]?.spaces ?? 2;
 
     return {
       TemplateLiteral(node) {
@@ -68,13 +84,21 @@ export const rule = createRule<Options, MessageIds>({
 
         const sqlTagIsPresent = tagName === sqlTag;
 
-        let indentAnchorOffset = node.loc.start.column;
+        const templateElement = node.quasis.find((quasi) => {
+          return quasi.type === AST_NODE_TYPES.TemplateElement;
+        });
 
-        if (node.parent.type === AST_NODE_TYPES.TaggedTemplateExpression) {
-          indentAnchorOffset = node.parent.loc.start.column;
+        if (!templateElement) {
+          return;
         }
 
-        indentAnchorOffset += spaces;
+        let indentAnchorOffset = findFirstMeaningfulIndent(
+          templateElement.value.raw,
+        );
+
+        if (templateElement.value.raw.search(/\S/u) === 0) {
+          indentAnchorOffset = spaces;
+        }
 
         if (ignoreTagless && !sqlTagIsPresent) {
           return;
@@ -100,10 +124,6 @@ export const rule = createRule<Options, MessageIds>({
           return;
         }
 
-        if (ignoreBaseIndent) {
-          literal = dropBaseIndent(literal);
-        }
-
         let formatted = format(literal, {
           ...context.options[1],
           spaces,
@@ -121,8 +141,10 @@ export const rule = createRule<Options, MessageIds>({
           formatted = formatted.replace(/\n\n$/u, '\n');
         }
 
-        if (alignIndent) {
+        if (retainBaseIndent) {
           formatted = padIndent(formatted, indentAnchorOffset);
+        } else {
+          literal = dropBaseIndent(literal);
         }
 
         if (formatted !== literal) {
@@ -159,12 +181,11 @@ export const rule = createRule<Options, MessageIds>({
   },
   defaultOptions: [
     {
-      alignIndent: true,
-      ignoreBaseIndent: false,
       ignoreExpressions: false,
       ignoreInline: true,
       ignoreStartWithNewLine: true,
       ignoreTagless: true,
+      retainBaseIndent: true,
       sqlTag: 'sql',
     },
     {
@@ -192,14 +213,6 @@ export const rule = createRule<Options, MessageIds>({
       {
         additionalProperties: false,
         properties: {
-          alignIndent: {
-            default: false,
-            type: 'boolean',
-          },
-          ignoreBaseIndent: {
-            default: false,
-            type: 'boolean',
-          },
           ignoreExpressions: {
             default: false,
             type: 'boolean',
@@ -213,6 +226,10 @@ export const rule = createRule<Options, MessageIds>({
             type: 'boolean',
           },
           ignoreTagless: {
+            default: true,
+            type: 'boolean',
+          },
+          retainBaseIndent: {
             default: true,
             type: 'boolean',
           },

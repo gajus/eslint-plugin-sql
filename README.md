@@ -105,11 +105,11 @@ The first option is an object with the following configuration.
 
 |configuration|format|default|description|
 |---|---|---|---|
-|`ignoreBaseIndent`|boolean|`false`|Does not leave base indent before linting.|
 |`ignoreExpressions`|boolean|`false`|Does not format template literals that contain expressions.|
 |`ignoreInline`|boolean|`true`|Does not format queries that are written on a single line.|
 |`ignoreStartWithNewLine`|boolean|`true`|Does not remove `\n` at the beginning of queries.|
 |`ignoreTagless`|boolean|`true`|Does not format queries that are written without using `sql` tag.|
+|`retainBaseIndent`|boolean|`true`|Uses the first line of the query as the base indent.|
 |`sqlTag`|string|`sql`|Template tag name for SQL.|
 
 The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).
@@ -117,75 +117,111 @@ The second option is an object with the [`pg-formatter` configuration](https://g
 The following patterns are considered problems:
 
 ```js
+sql`
+  SELECT
+    1
+`
+// Options: [{},{"spaces":4}]
+// Message: undefined
+// Fixed code: 
+// sql`
+//   SELECT
+//       1
+// `
+
+sql.type({ id: z.number() })`
+  SELECT
+    1
+`
+// Options: [{},{"spaces":4}]
+// Message: undefined
+// Fixed code: 
+// sql.type({ id: z.number() })`
+//   SELECT
+//       1
+// `
+
+sql.typeAlias('void')`
+  SELECT
+    1
+`
+// Options: [{},{"spaces":4}]
+// Message: undefined
+// Fixed code: 
+// sql.typeAlias('void')`
+//   SELECT
+//       1
+// `
+
 `SELECT 1`
-// Options: [{"ignoreInline":false,"ignoreTagless":false}]
-// Message: Format the query
+// Options: [{"ignoreInline":false,"ignoreTagless":false},{}]
+// Message: undefined
 // Fixed code: 
 // `
-// SELECT
+//   SELECT
 //     1
 // `
 
 `SELECT 2`
 // Options: [{"ignoreInline":false,"ignoreTagless":false},{"spaces":2}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // `
-// SELECT
-//   2
+//   SELECT
+//     2
 // `
 
 sql.unsafe`SELECT 3`
-// Options: [{"ignoreInline":false}]
-// Message: Format the query
+// Options: [{"ignoreInline":false},{}]
+// Message: undefined
 // Fixed code: 
 // sql.unsafe`
-// SELECT
+//   SELECT
 //     3
 // `
 
 sql.type()`SELECT 3`
-// Options: [{"ignoreInline":false}]
-// Message: Format the query
+// Options: [{"ignoreInline":false},{}]
+// Message: undefined
 // Fixed code: 
 // sql.type()`
-// SELECT
+//   SELECT
 //     3
 // `
 
 `SELECT ${'foo'} FROM ${'bar'}`
-// Options: [{"ignoreInline":false,"ignoreTagless":false}]
-// Message: Format the query
+// Options: [{"ignoreInline":false,"ignoreTagless":false},{}]
+// Message: undefined
 // Fixed code: 
 // `
-// SELECT
+//   SELECT
 //     ${'foo'}
-// FROM
+//   FROM
 //     ${'bar'}
 // `
 
-    const code = sql`
-    SELECT
-        ${'foo'}
-    FROM
-        ${'bar'}
+const code = sql`
+  SELECT
+      foo
+  FROM
+      bar
 `
-// Options: [{"ignoreBaseIndent":false}]
-// Message: Format the query
+// Options: [{},{}]
+// Message: undefined
 // Fixed code: 
-//     const code = sql`
-// SELECT
-//     ${'foo'}
-// FROM
-//     ${'bar'}
+// const code = sql`
+//   SELECT
+//     foo
+//   FROM
+//     bar
 // `
 
 SQL`SELECT 1`
-// Options: [{"ignoreInline":false,"sqlTag":"SQL"}]
-// Message: Format the query
+// Options: [{"ignoreInline":false,"sqlTag":"SQL"},{}]
+// Message: undefined
 // Fixed code: 
 // SQL`
-// SELECT
+//   SELECT
 //     1
 // `
 ```
@@ -193,34 +229,45 @@ SQL`SELECT 1`
 The following patterns are not considered problems:
 
 ```js
+`
+# A
+## B
+### C
+`
+
 sql`SELECT 1`
-// Options: [{"ignoreInline":true}]
+// Options: [{"ignoreInline":true},{}]
 
 `SELECT 2`
-// Options: [{"ignoreTagless":true}]
+// Options: [{"ignoreTagless":true},{}]
 
-`SELECT ${'foo'} FROM ${'bar'}`
-// Options: [{"ignoreExpressions":true,"ignoreInline":false,"ignoreTagless":false}]
+const code = sql`
+  SELECT
+    ${'foo'}
+  FROM
+    ${'bar'}
+`
+// Options: [{"ignoreExpressions":true,"ignoreInline":false,"ignoreTagless":false},{}]
 
-    const code = sql`
-    SELECT
-        ${'foo'}
-    FROM
-        ${'bar'}
-    `
-// Options: [{"ignoreBaseIndent":true}]
+const code = sql`
+  SELECT
+    ${'foo'}
+  FROM
+    ${'bar'}
+`
+// Options: [{},{}]
 
-   const code = sql`
-        DROP TABLE foo
-    `;
-// Options: [{"ignoreBaseIndent":true}]
+const code = sql`
+  DROP TABLE foo
+`
+// Options: [{},{}]
 
-   const code = sql`
-        DROP TABLE foo;
+const code = sql`
+  DROP TABLE foo;
 
-        DROP TABLE foo;
-    `;
-// Options: [{"ignoreBaseIndent":true}]
+  DROP TABLE foo;
+`
+// Options: [{},{}]
 ```
 
 
@@ -251,20 +298,20 @@ The following patterns are considered problems:
 
 ```js
 `SELECT 1`
-// Message: Use "sql" tag
+// Message: undefined
 
 `SELECT ${'foo'}`
-// Message: Use "sql" tag
+// Message: undefined
 
 foo`SELECT ${'bar'}`
-// Message: Use "sql" tag
+// Message: undefined
 
 `SELECT ?`
-// Message: Use "sql" tag
+// Message: undefined
 
 foo`SELECT ${'bar'}`
 // Options: [{"sqlTag":"SQL"}]
-// Message: Use "SQL" tag
+// Message: undefined
 ```
 
 The following patterns are not considered problems:

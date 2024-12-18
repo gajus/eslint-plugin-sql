@@ -11,8 +11,8 @@ export default createRuleTester(
       {
         code: multiline`
           sql\`
-          SELECT
-            1
+            SELECT
+              1
           \`
         `,
         errors: [
@@ -28,43 +28,16 @@ export default createRuleTester(
         ],
         output: multiline`
           sql\`
-          SELECT
-              1
-          \`
-        `,
-      },
-      {
-        code: multiline`
-          sql\`
-          SELECT
-            1
-          \`
-        `,
-        errors: [
-          {
-            messageId: 'format',
-          },
-        ],
-        options: [
-          {
-            alignIndent: true,
-          },
-          {
-            spaces: 4,
-          },
-        ],
-        output: multiline`
-          sql\`
-              SELECT
-                  1
+            SELECT
+                1
           \`
         `,
       },
       {
         code: multiline`
           sql.type({ id: z.number() })\`
-          SELECT
-            1
+            SELECT
+              1
           \`
         `,
         errors: [
@@ -80,16 +53,16 @@ export default createRuleTester(
         ],
         output: multiline`
           sql.type({ id: z.number() })\`
-          SELECT
-              1
+            SELECT
+                1
           \`
         `,
       },
       {
         code: multiline`
           sql.typeAlias('void')\`
-          SELECT
-            1
+            SELECT
+              1
           \`
         `,
         errors: [
@@ -105,8 +78,8 @@ export default createRuleTester(
         ],
         output: multiline`
           sql.typeAlias('void')\`
-          SELECT
-              1
+            SELECT
+                1
           \`
         `,
       },
@@ -124,7 +97,12 @@ export default createRuleTester(
           },
           {},
         ],
-        output: '`\nSELECT\n    1\n`',
+        output: multiline`
+          \`
+            SELECT
+              1
+          \`
+        `,
       },
       {
         code: '`SELECT 2`',
@@ -142,7 +120,12 @@ export default createRuleTester(
             spaces: 2,
           },
         ],
-        output: '`\nSELECT\n  2\n`',
+        output: multiline`
+          \`
+            SELECT
+              2
+          \`
+        `,
       },
       {
         code: 'sql.unsafe`SELECT 3`',
@@ -157,7 +140,12 @@ export default createRuleTester(
           },
           {},
         ],
-        output: 'sql.unsafe`\nSELECT\n    3\n`',
+        output: multiline`
+          sql.unsafe\`
+            SELECT
+              3
+          \`
+        `,
       },
       {
         code: 'sql.type()`SELECT 3`',
@@ -172,7 +160,12 @@ export default createRuleTester(
           },
           {},
         ],
-        output: 'sql.type()`\nSELECT\n    3\n`',
+        output: multiline`
+          sql.type()\`
+            SELECT
+              3
+          \`
+        `,
       },
       {
         code: "`SELECT ${'foo'} FROM ${'bar'}`",
@@ -188,23 +181,38 @@ export default createRuleTester(
           },
           {},
         ],
-        output: "`\nSELECT\n    ${'foo'}\nFROM\n    ${'bar'}\n`",
+        output: multiline`
+          \`
+            SELECT
+              \${'foo'}
+            FROM
+              \${'bar'}
+          \`
+        `,
       },
       {
-        code: "    const code = sql`\n    SELECT\n        ${'foo'}\n    FROM\n        ${'bar'}\n`",
+        code: multiline`
+          const code = sql\`
+            SELECT
+                ${'foo'}
+            FROM
+                ${'bar'}
+          \`
+        `,
         errors: [
           {
             messageId: 'format',
           },
         ],
-        options: [
-          {
-            ignoreBaseIndent: false,
-          },
-          {},
-        ],
-        output:
-          "    const code = sql`\nSELECT\n    ${'foo'}\nFROM\n    ${'bar'}\n`",
+        options: [{}, {}],
+        output: multiline`
+          const code = sql\`
+            SELECT
+              ${'foo'}
+            FROM
+              ${'bar'}
+          \`
+        `,
       },
       {
         code: 'SQL`SELECT 1`',
@@ -220,7 +228,12 @@ export default createRuleTester(
           },
           {},
         ],
-        output: 'SQL`\nSELECT\n    1\n`',
+        output: multiline`
+          SQL\`
+            SELECT
+              1
+          \`
+        `,
       },
     ],
     valid: [
@@ -252,7 +265,14 @@ export default createRuleTester(
         ],
       },
       {
-        code: "`SELECT ${'foo'} FROM ${'bar'}`",
+        code: multiline`
+          const code = sql\`
+            SELECT
+              \${'foo'}
+            FROM
+              \${'bar'}
+          \`
+        `,
         options: [
           {
             ignoreExpressions: true,
@@ -263,31 +283,34 @@ export default createRuleTester(
         ],
       },
       {
-        code: "    const code = sql`\n    SELECT\n        ${'foo'}\n    FROM\n        ${'bar'}\n    `",
-        options: [
-          {
-            ignoreBaseIndent: true,
-          },
-          {},
-        ],
+        code: multiline`
+          const code = sql\`
+            SELECT
+              \${'foo'}
+            FROM
+              \${'bar'}
+          \`
+        `,
+        options: [{}, {}],
       },
       {
-        code: '   const code = sql`\n        DROP TABLE foo\n    `;',
-        options: [
-          {
-            ignoreBaseIndent: true,
-          },
-          {},
-        ],
+        code: multiline`
+          const code = sql\`
+            DROP TABLE foo
+          \`
+        `,
+        options: [{}, {}],
       },
       {
-        code: '   const code = sql`\n        DROP TABLE foo;\n\n        DROP TABLE foo;\n    `;',
-        options: [
-          {
-            ignoreBaseIndent: true,
-          },
-          {},
-        ],
+        code: multiline`
+          const code = sql\`
+            DROP TABLE foo;
+
+            DROP TABLE foo;
+          \`
+        `,
+
+        options: [{}, {}],
       },
     ],
   },
