@@ -9,6 +9,81 @@ export default createRuleTester(
   {
     invalid: [
       {
+        code: multiline`
+          sql\`
+          SELECT
+            1
+          \`
+        `,
+        errors: [
+          {
+            message: 'Format the query',
+          },
+        ],
+        options: [
+          {},
+          {
+            spaces: 4,
+          },
+        ],
+        output: multiline`
+          sql\`
+          SELECT
+              1
+          \`
+        `,
+      },
+      {
+        code: multiline`
+          sql.type({ id: z.number() })\`
+          SELECT
+            1
+          \`
+        `,
+        errors: [
+          {
+            message: 'Format the query',
+          },
+        ],
+        options: [
+          {},
+          {
+            spaces: 4,
+          },
+        ],
+        output: multiline`
+          sql.type({ id: z.number() })\`
+          SELECT
+              1
+          \`
+        `,
+      },
+      {
+        code: multiline`
+          sql.typeAlias('void')\`
+          SELECT
+            1
+          \`
+        `,
+        errors: [
+          {
+            message: 'Format the query',
+          },
+        ],
+        options: [
+          {},
+          {
+            spaces: 4,
+          },
+        ],
+        output: multiline`
+          sql.typeAlias('void')\`
+          SELECT
+              1
+          \`
+        `,
+      },
+      {
         code: '`SELECT 1`',
         errors: [
           {
