@@ -2,7 +2,6 @@
 <a name="eslint-plugin-sql"></a>
 # eslint-plugin-sql
 
-[![NPM version](http://img.shields.io/npm/v/eslint-plugin-sql.svg?style=flat-square)](https://www.npmjs.org/package/eslint-plugin-sql)
 [![Canonical Code Style](https://img.shields.io/badge/code%20style-canonical-blue.svg?style=flat-square)](https://github.com/gajus/canonical)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kuizinas.svg?style=social&label=Follow)](https://twitter.com/kuizinas)
 
@@ -115,6 +114,115 @@ The first option is an object with the following configuration.
 
 The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).
 
+The following patterns are considered problems:
+
+```js
+`SELECT 1`
+// Options: [{"ignoreInline":false,"ignoreTagless":false}]
+// Message: Format the query
+// Fixed code: 
+// `
+// SELECT
+//     1
+// `
+
+`SELECT 2`
+// Options: [{"ignoreInline":false,"ignoreTagless":false},{"spaces":2}]
+// Message: Format the query
+// Fixed code: 
+// `
+// SELECT
+//   2
+// `
+
+sql.unsafe`SELECT 3`
+// Options: [{"ignoreInline":false}]
+// Message: Format the query
+// Fixed code: 
+// sql.unsafe`
+// SELECT
+//     3
+// `
+
+sql.type()`SELECT 3`
+// Options: [{"ignoreInline":false}]
+// Message: Format the query
+// Fixed code: 
+// sql.type()`
+// SELECT
+//     3
+// `
+
+`SELECT ${'foo'} FROM ${'bar'}`
+// Options: [{"ignoreInline":false,"ignoreTagless":false}]
+// Message: Format the query
+// Fixed code: 
+// `
+// SELECT
+//     ${'foo'}
+// FROM
+//     ${'bar'}
+// `
+
+    const code = sql`
+    SELECT
+        ${'foo'}
+    FROM
+        ${'bar'}
+`
+// Options: [{"ignoreBaseIndent":false}]
+// Message: Format the query
+// Fixed code: 
+//     const code = sql`
+// SELECT
+//     ${'foo'}
+// FROM
+//     ${'bar'}
+// `
+
+SQL`SELECT 1`
+// Options: [{"ignoreInline":false,"sqlTag":"SQL"}]
+// Message: Format the query
+// Fixed code: 
+// SQL`
+// SELECT
+//     1
+// `
+```
+
+The following patterns are not considered problems:
+
+```js
+sql`SELECT 1`
+// Options: [{"ignoreInline":true}]
+
+`SELECT 2`
+// Options: [{"ignoreTagless":true}]
+
+`SELECT ${'foo'} FROM ${'bar'}`
+// Options: [{"ignoreExpressions":true,"ignoreInline":false,"ignoreTagless":false}]
+
+    const code = sql`
+    SELECT
+        ${'foo'}
+    FROM
+        ${'bar'}
+    `
+// Options: [{"ignoreBaseIndent":true}]
+
+   const code = sql`
+        DROP TABLE foo
+    `;
+// Options: [{"ignoreBaseIndent":true}]
+
+   const code = sql`
+        DROP TABLE foo;
+
+        DROP TABLE foo;
+    `;
+// Options: [{"ignoreBaseIndent":true}]
+```
+
 
 
 <a name="user-content-eslint-plugin-sql-rules-no-unsafe-query"></a>
@@ -138,6 +246,42 @@ The first option is an object with the following configuration.
 |---|---|---|---|
 |`allowLiteral`|boolean|`false`|Controls whether `sql` tag is required for template literals containing literal queries, i.e. template literals without expressions.|
 |`sqlTag`|string|`sql`|Template tag name for SQL.|
+
+The following patterns are considered problems:
+
+```js
+`SELECT 1`
+// Message: Use "sql" tag
+
+`SELECT ${'foo'}`
+// Message: Use "sql" tag
+
+foo`SELECT ${'bar'}`
+// Message: Use "sql" tag
+
+`SELECT ?`
+// Message: Use "sql" tag
+
+foo`SELECT ${'bar'}`
+// Options: [{"sqlTag":"SQL"}]
+// Message: Use "SQL" tag
+```
+
+The following patterns are not considered problems:
+
+```js
+sql.unsafe`SELECT 3`
+
+`SELECT 1`
+// Options: [{"allowLiteral":true}]
+
+sql`SELECT 1`
+
+sql`SELECT ${'foo'}`
+
+SQL`SELECT ${'bar'}`
+// Options: [{"sqlTag":"SQL"}]
+```
 
 
 

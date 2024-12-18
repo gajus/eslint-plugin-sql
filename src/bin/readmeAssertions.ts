@@ -48,7 +48,7 @@ const getAssertions = () => {
   );
 
   const assertionNames = _.map(assertionFiles, (filePath) => {
-    return path.basename(filePath, '.ts');
+    return path.basename(filePath, '.test.ts');
   });
 
   const assertionCodes = _.map(assertionFiles, (filePath) => {
@@ -56,8 +56,8 @@ const getAssertions = () => {
     const codes = require(filePath);
 
     return {
-      invalid: _.map(codes.invalid, formatCodeSnippet),
-      valid: _.map(codes.valid, formatCodeSnippet),
+      invalid: _.map(codes.default.testCases.invalid, formatCodeSnippet),
+      valid: _.map(codes.default.testCases.valid, formatCodeSnippet),
     };
   });
 
