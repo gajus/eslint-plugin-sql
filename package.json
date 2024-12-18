@@ -60,7 +60,7 @@
     "lint:cspell": "cspell './**/*.{ts,tsx}' --no-progress --gitignore",
     "lint:eslint": "eslint ./src ./test",
     "lint:tsc": "tsc --noEmit",
-    "prepare": "husky install",
+    "prepare": "husky",
     "test": "npm run test:mocha",
     "test:mocha": "mocha --require tsx src/**/*.test.ts"
   },
