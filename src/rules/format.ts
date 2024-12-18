@@ -1,106 +1,153 @@
+import { createRule } from '../factories/createRule';
 import { dropBaseIndent } from '../utilities/dropBaseIndent';
 import { isSqlQuery } from '../utilities/isSqlQuery';
 import { generate } from 'astring';
 import { format } from 'pg-formatter';
 
-const create = (context) => {
-  const placeholderRule = context.settings?.sql?.placeholderRule;
+type MessageIds = 'format';
 
-  const pluginOptions = context.options?.[0] || {};
+type Options = [
+  {
+    ignoreBaseIndent?: boolean;
+    ignoreExpressions?: boolean;
+    ignoreInline?: boolean;
+    ignoreStartWithNewLine?: boolean;
+    ignoreTagless?: boolean;
+    sqlTag?: string;
+  },
+  {
+    anonymize?: boolean;
+    commaBreak?: boolean;
+    functionCase?: 'lowercase' | 'uppercase';
+    keywordCase?: 'lowercase' | 'uppercase';
+    noRcFile?: boolean;
+    spaces?: number;
+    stripComments?: boolean;
+    tabs?: boolean;
+  },
+];
 
-  const sqlTag = pluginOptions.sqlTag ?? 'sql';
-  const ignoreExpressions = pluginOptions.ignoreExpressions === true;
-  const ignoreInline = pluginOptions.ignoreInline !== false;
-  const ignoreTagless = pluginOptions.ignoreTagless !== false;
-  const ignoreStartWithNewLine = pluginOptions.ignoreStartWithNewLine !== false;
-  const ignoreBaseIndent = pluginOptions.ignoreBaseIndent === true;
+export const rule = createRule<Options, MessageIds>({
+  create: (context) => {
+    // @ts-expect-error I am ont clear how to type this
+    const placeholderRule = context.settings?.sql?.placeholderRule;
 
-  return {
-    TemplateLiteral(node) {
-      const tagName =
-        node.parent.tag?.name ??
-        node.parent.tag?.object?.name ??
-        node.parent.tag?.callee?.object?.name;
+    const pluginOptions = context.options?.[0] || {};
 
-      const sqlTagIsPresent = tagName === sqlTag;
+    const sqlTag = pluginOptions.sqlTag ?? 'sql';
+    const ignoreExpressions = pluginOptions.ignoreExpressions === true;
+    const ignoreInline = pluginOptions.ignoreInline !== false;
+    const ignoreTagless = pluginOptions.ignoreTagless !== false;
+    const ignoreStartWithNewLine =
+      pluginOptions.ignoreStartWithNewLine !== false;
+    const ignoreBaseIndent = pluginOptions.ignoreBaseIndent === true;
 
-      if (ignoreTagless && !sqlTagIsPresent) {
-        return;
-      }
+    return {
+      TemplateLiteral(node) {
+        const tagName =
+          // @ts-expect-error TODO
+          node.parent.tag?.name ??
+          // @ts-expect-error TODO
+          node.parent.tag?.object?.name ??
+          // @ts-expect-error TODO
+          node.parent.tag?.callee?.object?.name;
 
-      if (ignoreExpressions && node.quasis.length !== 1) {
-        return;
-      }
+        const sqlTagIsPresent = tagName === sqlTag;
 
-      const magic = '"gajus-eslint-plugin-sql"';
+        if (ignoreTagless && !sqlTagIsPresent) {
+          return;
+        }
 
-      let literal = node.quasis
-        .map((quasi) => {
-          return quasi.value.raw;
-        })
-        .join(magic);
+        if (ignoreExpressions && node.quasis.length !== 1) {
+          return;
+        }
 
-      if (!sqlTagIsPresent && !isSqlQuery(literal, placeholderRule)) {
-        return;
-      }
+        const magic = '"gajus-eslint-plugin-sql"';
 
-      if (ignoreInline && !literal.includes('\n')) {
-        return;
-      }
+        let literal = node.quasis
+          .map((quasi) => {
+            return quasi.value.raw;
+          })
+          .join(magic);
 
-      if (ignoreBaseIndent) {
-        literal = dropBaseIndent(literal);
-      }
+        if (!sqlTagIsPresent && !isSqlQuery(literal, placeholderRule)) {
+          return;
+        }
 
-      let formatted = format(literal, context.options[1]);
+        if (ignoreInline && !literal.includes('\n')) {
+          return;
+        }
 
-      if (
-        ignoreStartWithNewLine &&
-        literal.startsWith('\n') &&
-        !formatted.startsWith('\n')
-      ) {
-        formatted = '\n' + formatted;
-      }
+        if (ignoreBaseIndent) {
+          literal = dropBaseIndent(literal);
+        }
 
-      if (formatted.endsWith('\n\n')) {
-        formatted = formatted.replace(/\n\n$/u, '\n');
-      }
+        let formatted = format(literal, context.options[1]);
 
-      if (formatted !== literal) {
-        context.report({
-          fix: (fixer) => {
-            let final = formatted;
+        if (
+          ignoreStartWithNewLine &&
+          literal.startsWith('\n') &&
+          !formatted.startsWith('\n')
+        ) {
+          formatted = '\n' + formatted;
+        }
 
-            const expressionCount = node.expressions.length;
-            let index = 0;
+        if (formatted.endsWith('\n\n')) {
+          formatted = formatted.replace(/\n\n$/u, '\n');
+        }
 
-            while (index <= expressionCount - 1) {
-              final = final.replace(
-                magic,
-                '${' + generate(node.expressions[index]) + '}',
+        if (formatted !== literal) {
+          context.report({
+            fix: (fixer) => {
+              let final = formatted;
+
+              const expressionCount = node.expressions.length;
+              let index = 0;
+
+              while (index <= expressionCount - 1) {
+                final = final.replace(
+                  magic,
+                  '${' + generate(node.expressions[index]) + '}',
+                );
+
+                index++;
+              }
+
+              return fixer.replaceTextRange(
+                [
+                  node.quasis[0].range[0],
+                  node.quasis[node.quasis.length - 1].range[1],
+                ],
+                '`' + (final.startsWith('\n') ? final : '\n' + final) + '`',
               );
-
-              index++;
-            }
-
-            return fixer.replaceTextRange(
-              [
-                node.quasis[0].range[0],
-                node.quasis[node.quasis.length - 1].range[1],
-              ],
-              '`' + (final.startsWith('\n') ? final : '\n' + final) + '`',
-            );
-          },
-          message: 'Format the query',
-          node,
-        });
-      }
+            },
+            messageId: 'format',
+            node,
+          });
+        }
+      },
+    };
+  },
+  defaultOptions: [
+    {
+      ignoreBaseIndent: false,
+      ignoreExpressions: false,
+      ignoreInline: true,
+      ignoreStartWithNewLine: true,
+      ignoreTagless: true,
+      sqlTag: 'sql',
     },
-  };
-};
-
-export = {
-  create,
+    {
+      anonymize: false,
+      commaBreak: false,
+      functionCase: 'lowercase',
+      keywordCase: 'uppercase',
+      noRcFile: false,
+      spaces: 2,
+      stripComments: false,
+      tabs: false,
+    },
+  ],
   meta: {
     docs: {
       description:
@@ -108,6 +155,9 @@ export = {
       url: 'https://github.com/gajus/eslint-plugin-sql#eslint-plugin-sql-rules-format',
     },
     fixable: 'code',
+    messages: {
+      format: 'Format the query',
+    },
     schema: [
       {
         additionalProperties: false,
@@ -179,4 +229,5 @@ export = {
     ],
     type: 'suggestion',
   },
-};
+  name: 'format',
+});

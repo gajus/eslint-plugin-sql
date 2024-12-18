@@ -1,5 +1,5 @@
 import { createRuleTester } from '../factories/createRuleTester';
-import rule from './format';
+import { rule } from './format';
 import multiline from 'multiline-ts';
 
 export default createRuleTester(
@@ -17,7 +17,7 @@ export default createRuleTester(
         `,
         errors: [
           {
-            message: 'Format the query',
+            messageId: 'format',
           },
         ],
         options: [
@@ -42,7 +42,7 @@ export default createRuleTester(
         `,
         errors: [
           {
-            message: 'Format the query',
+            messageId: 'format',
           },
         ],
         options: [
@@ -67,7 +67,7 @@ export default createRuleTester(
         `,
         errors: [
           {
-            message: 'Format the query',
+            messageId: 'format',
           },
         ],
         options: [
@@ -87,7 +87,7 @@ export default createRuleTester(
         code: '`SELECT 1`',
         errors: [
           {
-            message: 'Format the query',
+            messageId: 'format',
           },
         ],
         options: [
@@ -95,6 +95,7 @@ export default createRuleTester(
             ignoreInline: false,
             ignoreTagless: false,
           },
+          {},
         ],
         output: '`\nSELECT\n    1\n`',
       },
@@ -102,7 +103,7 @@ export default createRuleTester(
         code: '`SELECT 2`',
         errors: [
           {
-            message: 'Format the query',
+            messageId: 'format',
           },
         ],
         options: [
@@ -120,13 +121,14 @@ export default createRuleTester(
         code: 'sql.unsafe`SELECT 3`',
         errors: [
           {
-            message: 'Format the query',
+            messageId: 'format',
           },
         ],
         options: [
           {
             ignoreInline: false,
           },
+          {},
         ],
         output: 'sql.unsafe`\nSELECT\n    3\n`',
       },
@@ -134,13 +136,14 @@ export default createRuleTester(
         code: 'sql.type()`SELECT 3`',
         errors: [
           {
-            message: 'Format the query',
+            messageId: 'format',
           },
         ],
         options: [
           {
             ignoreInline: false,
           },
+          {},
         ],
         output: 'sql.type()`\nSELECT\n    3\n`',
       },
@@ -148,7 +151,7 @@ export default createRuleTester(
         code: "`SELECT ${'foo'} FROM ${'bar'}`",
         errors: [
           {
-            message: 'Format the query',
+            messageId: 'format',
           },
         ],
         options: [
@@ -156,6 +159,7 @@ export default createRuleTester(
             ignoreInline: false,
             ignoreTagless: false,
           },
+          {},
         ],
         output: "`\nSELECT\n    ${'foo'}\nFROM\n    ${'bar'}\n`",
       },
@@ -163,13 +167,14 @@ export default createRuleTester(
         code: "    const code = sql`\n    SELECT\n        ${'foo'}\n    FROM\n        ${'bar'}\n`",
         errors: [
           {
-            message: 'Format the query',
+            messageId: 'format',
           },
         ],
         options: [
           {
             ignoreBaseIndent: false,
           },
+          {},
         ],
         output:
           "    const code = sql`\nSELECT\n    ${'foo'}\nFROM\n    ${'bar'}\n`",
@@ -178,7 +183,7 @@ export default createRuleTester(
         code: 'SQL`SELECT 1`',
         errors: [
           {
-            message: 'Format the query',
+            messageId: 'format',
           },
         ],
         options: [
@@ -186,6 +191,7 @@ export default createRuleTester(
             ignoreInline: false,
             sqlTag: 'SQL',
           },
+          {},
         ],
         output: 'SQL`\nSELECT\n    1\n`',
       },
@@ -206,6 +212,7 @@ export default createRuleTester(
           {
             ignoreInline: true,
           },
+          {},
         ],
       },
       {
@@ -214,6 +221,7 @@ export default createRuleTester(
           {
             ignoreTagless: true,
           },
+          {},
         ],
       },
       {
@@ -224,6 +232,7 @@ export default createRuleTester(
             ignoreInline: false,
             ignoreTagless: false,
           },
+          {},
         ],
       },
       {
@@ -232,6 +241,7 @@ export default createRuleTester(
           {
             ignoreBaseIndent: true,
           },
+          {},
         ],
       },
       {
@@ -240,6 +250,7 @@ export default createRuleTester(
           {
             ignoreBaseIndent: true,
           },
+          {},
         ],
       },
       {
@@ -248,6 +259,7 @@ export default createRuleTester(
           {
             ignoreBaseIndent: true,
           },
+          {},
         ],
       },
     ],

@@ -1,5 +1,5 @@
 import { createRuleTester } from '../factories/createRuleTester';
-import rule from './noUnsafeQuery';
+import { rule } from './noUnsafeQuery';
 
 export default createRuleTester(
   'no-unsafe-query',
@@ -11,7 +11,7 @@ export default createRuleTester(
         code: '`SELECT 1`',
         errors: [
           {
-            message: 'Use "sql" tag',
+            messageId: 'noUnsafeQuery',
           },
         ],
       },
@@ -19,7 +19,7 @@ export default createRuleTester(
         code: "`SELECT ${'foo'}`",
         errors: [
           {
-            message: 'Use "sql" tag',
+            messageId: 'noUnsafeQuery',
           },
         ],
       },
@@ -27,7 +27,7 @@ export default createRuleTester(
         code: "foo`SELECT ${'bar'}`",
         errors: [
           {
-            message: 'Use "sql" tag',
+            messageId: 'noUnsafeQuery',
           },
         ],
       },
@@ -35,7 +35,7 @@ export default createRuleTester(
         code: '`SELECT ?`',
         errors: [
           {
-            message: 'Use "sql" tag',
+            messageId: 'noUnsafeQuery',
           },
         ],
         settings: {
@@ -48,7 +48,7 @@ export default createRuleTester(
         code: "foo`SELECT ${'bar'}`",
         errors: [
           {
-            message: 'Use "SQL" tag',
+            messageId: 'noUnsafeQuery',
           },
         ],
         options: [

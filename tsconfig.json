@@ -6,8 +6,8 @@
     "lib": [
       "es2021"
     ],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "Node16",
+    "moduleResolution": "node16",
     "noEmit": true,
     "noImplicitAny": false,
     "noImplicitReturns": true,

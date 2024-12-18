@@ -1,3 +1,4 @@
+import { createRule } from '../factories/createRule';
 import { isSqlQuery } from '../utilities/isSqlQuery';
 import createDebug from 'debug';
 
@@ -8,56 +9,77 @@ const defaultOptions = {
   sqlTag: 'sql',
 };
 
-const create = (context) => {
-  const placeholderRule = context.settings?.sql?.placeholderRule;
+type MessageIds = 'noUnsafeQuery';
 
-  const pluginOptions = context.options?.[0] || {};
+type Options = [
+  {
+    allowLiteral?: boolean;
+    sqlTag?: string;
+  },
+];
 
-  const sqlTag = pluginOptions.sqlTag ?? defaultOptions.sqlTag;
-  const allowLiteral =
-    pluginOptions.allowLiteral ?? defaultOptions.allowLiteral;
+export const rule = createRule<Options, MessageIds>({
+  create: (context) => {
+    // @ts-expect-error I am ont clear how to type this
+    const placeholderRule = context.settings?.sql?.placeholderRule;
 
-  return {
-    TemplateLiteral(node) {
-      if (allowLiteral && node.quasis.length === 1) {
-        return;
-      }
+    const pluginOptions = context.options?.[0] || {};
 
-      const literal = node.quasis
-        .map((quasi) => {
-          return quasi.value.raw;
-        })
-        .join('foo');
+    const sqlTag = pluginOptions.sqlTag ?? defaultOptions.sqlTag;
+    const allowLiteral =
+      pluginOptions.allowLiteral ?? defaultOptions.allowLiteral;
 
-      debug('input', literal);
+    return {
+      TemplateLiteral(node) {
+        if (allowLiteral && node.quasis.length === 1) {
+          return;
+        }
 
-      const recognizedAsQuery = isSqlQuery(literal, placeholderRule);
+        const literal = node.quasis
+          .map((quasi) => {
+            return quasi.value.raw;
+          })
+          .join('foo');
 
-      debug('recognized as a query', recognizedAsQuery);
+        debug('input', literal);
 
-      if (!recognizedAsQuery) {
-        return;
-      }
+        const recognizedAsQuery = isSqlQuery(literal, placeholderRule);
 
-      const tagName =
-        node.parent.tag?.name ??
-        node.parent.tag?.object?.name ??
-        node.parent.tag?.callee?.object?.name;
+        debug('recognized as a query', recognizedAsQuery);
 
-      const legacyTagName = node.parent?.name?.toLowerCase();
+        if (!recognizedAsQuery) {
+          return;
+        }
 
-      if (legacyTagName !== sqlTag && tagName !== sqlTag) {
-        context.report({
-          message: `Use "${sqlTag}" tag`,
-          node,
-        });
-      }
+        const tagName =
+          // @ts-expect-error TODO
+          node.parent.tag?.name ??
+          // @ts-expect-error TODO
+          node.parent.tag?.object?.name ??
+          // @ts-expect-error TODO
+          node.parent.tag?.callee?.object?.name;
+
+        // @ts-expect-error TODO
+        const legacyTagName = node.parent?.name?.toLowerCase();
+
+        if (legacyTagName !== sqlTag && tagName !== sqlTag) {
+          context.report({
+            data: {
+              sqlTag,
+            },
+            messageId: 'noUnsafeQuery',
+            node,
+          });
+        }
+      },
+    };
+  },
+  defaultOptions: [
+    {
+      allowLiteral: false,
+      sqlTag: 'sql',
     },
-  };
-};
-
-export = {
-  create,
+  ],
   meta: {
     docs: {
       description:
@@ -65,6 +87,9 @@ export = {
       url: 'https://github.com/gajus/eslint-plugin-sql#no-unsafe-query',
     },
     fixable: 'code',
+    messages: {
+      noUnsafeQuery: 'Use "{{sqlTag}}" tag',
+    },
     schema: [
       {
         additionalProperties: false,
@@ -83,4 +108,5 @@ export = {
     ],
     type: 'problem',
   },
-};
+  name: 'no-unsafe-query',
+});
