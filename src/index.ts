@@ -1,5 +1,3 @@
-// @flow
-
 import format from './rules/format';
 import noUnsafeQuery from './rules/noUnsafeQuery';
 

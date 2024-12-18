@@ -1,6 +1,9 @@
 import parser from 'sql-parse';
 
-export default (literal: string, ignorePattern?: string): boolean => {
+export const isSqlQuery = (
+  literal: string,
+  ignorePattern?: string,
+): boolean => {
   if (!literal) {
     return false;
   }

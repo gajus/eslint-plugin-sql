@@ -44,7 +44,7 @@ const formatCodeSnippet = (setup: Setup) => {
 
 const getAssertions = () => {
   const assertionFiles = glob.sync(
-    path.resolve(__dirname, '../test/rules/assertions/*.ts'),
+    path.resolve(__dirname, '../../src/rules/*.test.ts'),
   );
 
   const assertionNames = _.map(assertionFiles, (filePath) => {
@@ -65,7 +65,7 @@ const getAssertions = () => {
 };
 
 const updateDocuments = (assertions) => {
-  const readmeDocumentPath = path.join(__dirname, '../README.md');
+  const readmeDocumentPath = path.join(__dirname, '../../README.md');
 
   let documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
 

@@ -1,5 +1,5 @@
 // based on https://github.com/sindresorhus/strip-indent
-export default (raw: string) => {
+export const dropBaseIndent = (raw: string) => {
   const trimmedString = raw.replace(/ *$/u, '');
 
   const matches = trimmedString.match(/^[\t ]*(?=\S)/gmu);

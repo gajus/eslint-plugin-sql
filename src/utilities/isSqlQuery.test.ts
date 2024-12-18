@@ -1,7 +1,7 @@
 /* global describe */
 /* global it */
 
-import isSqlQuery from '../../src/utilities/isSqlQuery';
+import { isSqlQuery } from './isSqlQuery';
 import assert from 'node:assert';
 
 describe('isSqlQuery', () => {

@@ -61,7 +61,8 @@
     "lint:eslint": "eslint ./src ./test",
     "lint:tsc": "tsc --noEmit",
     "prepare": "husky install",
-    "test:mocha": "mocha --require tsx test/**/*"
+    "test": "npm run test:mocha",
+    "test:mocha": "mocha --require tsx src/**/*.test.ts"
   },
   "types": "./dist/index.d.ts",
   "version": "1.0.1"

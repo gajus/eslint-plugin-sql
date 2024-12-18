@@ -16,8 +16,6 @@
     "useUnknownInCatchVariables": false
   },
   "include": [
-    "bin",
-    "src",
-    "tests"
+    "src"
   ]
 }

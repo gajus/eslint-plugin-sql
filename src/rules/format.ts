@@ -1,5 +1,5 @@
-import dropBaseIndent from '../utilities/dropBaseIndent';
-import isSqlQuery from '../utilities/isSqlQuery';
+import { dropBaseIndent } from '../utilities/dropBaseIndent';
+import { isSqlQuery } from '../utilities/isSqlQuery';
 import { generate } from 'astring';
 import { format } from 'pg-formatter';
 

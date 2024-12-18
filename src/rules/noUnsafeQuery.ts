@@ -1,4 +1,4 @@
-import isSqlQuery from '../utilities/isSqlQuery';
+import { isSqlQuery } from '../utilities/isSqlQuery';
 import createDebug from 'debug';
 
 const debug = createDebug('eslint-plugin-sql:rule:no-unsafe-query');
