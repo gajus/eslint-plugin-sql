@@ -5,29 +5,29 @@
     "url": "http://gajus.com"
   },
   "dependencies": {
-    "astring": "^1.8.3",
-    "debug": "^4.3.4",
+    "astring": "^1.9.0",
+    "debug": "^4.4.0",
     "lodash": "^4.17.21",
-    "pg-formatter": "^2.0.2",
+    "pg-formatter": "^2.0.6",
     "sql-parse": "^0.1.5"
   },
   "description": "SQL linting rules for ESLint.",
   "devDependencies": {
-    "@semantic-release/commit-analyzer": "^9.0.2",
-    "@semantic-release/github": "^8.0.7",
-    "@semantic-release/npm": "^10.0.3",
-    "@types/mocha": "^10.0.0",
-    "@types/node": "^18.11.9",
-    "cspell": "^6.31.1",
-    "eslint": "^8.39.0",
-    "eslint-config-canonical": "41.0.3",
-    "gitdown": "^3.1.5",
-    "glob": "^8.0.3",
-    "husky": "^8.0.0",
-    "mocha": "^10.2.0",
-    "semantic-release": "^21.0.1",
-    "tsx": "^3.12.6",
-    "typescript": "^5.0.4"
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/github": "^11.0.1",
+    "@semantic-release/npm": "^12.0.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.10.2",
+    "cspell": "^8.17.1",
+    "eslint": "^9.17.0",
+    "eslint-config-canonical": "44.3.35",
+    "gitdown": "^4.1.1",
+    "glob": "^11.0.0",
+    "husky": "^9.1.7",
+    "mocha": "^11.0.1",
+    "semantic-release": "^24.2.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
   },
   "engines": {
     "node": ">=12"
@@ -42,7 +42,7 @@
     "sql"
   ],
   "license": "BSD-3-Clause",
-  "main": "./dist/src/index.js",
+  "main": "./dist/index.js",
   "name": "eslint-plugin-sql",
   "peerDependencies": {
     "eslint": ">=8.1.0"
@@ -61,5 +61,6 @@
     "prepare": "husky install",
     "test:mocha": "mocha --require tsx test/**/*"
   },
+  "types": "./dist/index.d.ts",
   "version": "1.0.1"
 }

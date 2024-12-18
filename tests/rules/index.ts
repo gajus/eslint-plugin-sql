@@ -11,7 +11,7 @@ const ruleTester = new RuleTester({
 const reportingRules = ['format', 'no-unsafe-query'];
 
 for (const ruleName of reportingRules) {
-  // eslint-disable-next-line node/global-require, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
   const assertions = require('./assertions/' + camelCase(ruleName));
 
   ruleTester.run(ruleName, plugin.rules[ruleName], assertions.default);

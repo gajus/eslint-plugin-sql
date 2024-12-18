@@ -2,7 +2,7 @@
  * @file This script is used to inline assertions into the README.md documents.
  */
 
-import glob from 'glob';
+import { glob } from 'glob';
 import _ from 'lodash';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -52,7 +52,7 @@ const getAssertions = () => {
   });
 
   const assertionCodes = _.map(assertionFiles, (filePath) => {
-    // eslint-disable-next-line node/global-require, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
     const codes = require(filePath);
 
     return {
@@ -70,6 +70,7 @@ const updateDocuments = (assertions) => {
   let documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
 
   documentBody = documentBody.replaceAll(
+    // eslint-disable-next-line regexp/no-unused-capturing-group
     /<!-- assertions ([a-z]+) -->/giu,
     (assertionsBlock) => {
       let exampleBody = '';

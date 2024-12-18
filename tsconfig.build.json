@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "dist"
+  },
+  "extends": "./tsconfig.json",
+  "include": [
+    "src"
+  ]
+}
