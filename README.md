@@ -116,13 +116,93 @@ The second option is an object with the [`sql-formatter` configuration](https://
 
 |configuration|default|description|
 |---|---|---|
-|`useTabs`|boolean|`false`|Use tabs for indentation.|
+|`useTabs`|`false`|Use tabs for indentation.|
 |`tabSize`|2|Number of spaces per indentation.|
 |`language`|`sql`|Language of the query.|
+|`keywordCase`|`preserve`|Determines the case of keywords (`preserve`, `upper`, `lower`).|
+|`dataTypeCase`|`preserve`|Determines the case of data types (`preserve`, `upper`, `lower`).|
+|`denseOperators`|`false`|Decides whitespace around operators.|
+|`functionCase`|`preserve`|Determines the case of functions (`preserve`, `upper`, `lower`).|
 
 The following patterns are considered problems:
 
 ```js
+sql.fragment`
+  SELECT
+    COUNT(*)
+  FROM
+    message
+  WHERE
+    id = ${message.id}
+`
+// Options: [{},{"keywordCase":"lower"}]
+// Message: undefined
+// Fixed code: 
+// sql.fragment`
+//   select
+//     COUNT(*)
+//   from
+//     message
+//   where
+//     id = ${message.id}
+// `
+
+sql.fragment`
+  select
+    COUNT(*)
+  from
+    message
+  where
+    id = ${message.id}
+`
+// Options: [{},{"keywordCase":"upper"}]
+// Message: undefined
+// Fixed code: 
+// sql.fragment`
+//   SELECT
+//     COUNT(*)
+//   FROM
+//     message
+//   WHERE
+//     id = ${message.id}
+// `
+
+sql.fragment`
+  ${null}
+UPDATE message
+SET
+  messages = ${sql.jsonb(messages as unknown as SerializableValue[])}
+WHERE id = ${message.id}
+`;
+// Options: [{},{"tabWidth":4}]
+// Message: undefined
+// Fixed code: 
+// sql.fragment`
+//   ${null}
+//   UPDATE message
+//   SET
+//       messages = ${sql.jsonb(messages as unknown as SerializableValue[])}
+//   WHERE
+//       id = ${message.id}
+// `;
+
+await pool.query(sql.typeAlias('void')`
+  UPDATE message
+  SET
+    messages = ${sql.jsonb(messages as unknown as SerializableValue[])}
+  WHERE id = ${message.id}
+`);
+// Options: [{},{"tabWidth":4}]
+// Message: undefined
+// Fixed code: 
+// await pool.query(sql.typeAlias('void')`
+//   UPDATE message
+//   SET
+//       messages = ${sql.jsonb(messages as unknown as SerializableValue[])}
+//   WHERE
+//       id = ${message.id}
+// `);
+
 sql`
   SELECT
     1

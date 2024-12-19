@@ -17,6 +17,9 @@ type Options = [
   },
   {
     keywordCase?: 'lower' | 'preserve' | 'upper';
+    dataTypeCase?: 'preserve' | 'upper' | 'lower';
+    functionCase?: 'preserve' | 'upper' | 'lower';
+    denseOperators?: boolean;
     language?:
       | 'bigquery'
       | 'db2'
@@ -267,6 +270,20 @@ export const rule = createRule<Options, MessageIds>({
         additionalProperties: false,
         properties: {
           keywordCase: {
+            default: 'preserve',
+            enum: ['lower', 'upper', 'preserve'],
+            type: 'string',
+          },
+          denseOperators: {
+            type: 'boolean',
+            default: false,
+          },
+          functionCase: {
+            default: 'preserve',
+            enum: ['lower', 'upper', 'preserve'],
+            type: 'string',
+          },
+          dataTypeCase: {
             default: 'preserve',
             enum: ['lower', 'upper', 'preserve'],
             type: 'string',

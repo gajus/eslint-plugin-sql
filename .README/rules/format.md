@@ -23,8 +23,12 @@ The second option is an object with the [`sql-formatter` configuration](https://
 
 |configuration|default|description|
 |---|---|---|
-|`useTabs`|boolean|`false`|Use tabs for indentation.|
+|`useTabs`|`false`|Use tabs for indentation.|
 |`tabSize`|2|Number of spaces per indentation.|
 |`language`|`sql`|Language of the query.|
+|`keywordCase`|`preserve`|Determines the case of keywords (`preserve`, `upper`, `lower`).|
+|`dataTypeCase`|`preserve`|Determines the case of data types (`preserve`, `upper`, `lower`).|
+|`denseOperators`|`false`|Decides whitespace around operators.|
+|`functionCase`|`preserve`|Determines the case of functions (`preserve`, `upper`, `lower`).|
 
 <!-- assertions format -->
