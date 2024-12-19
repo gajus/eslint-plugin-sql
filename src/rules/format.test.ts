@@ -45,6 +45,40 @@ export default createRuleTester(
       {
         code: multiline`
           sql.fragment\`
+            select
+              COUNT(*)
+            from
+              message
+            where
+              id = \${message.id}
+          \`
+        `,
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
+        name: 'keywordCase:upper',
+        options: [
+          {},
+          {
+            keywordCase: 'upper',
+          },
+        ],
+        output: multiline`
+          sql.fragment\`
+            SELECT
+              COUNT(*)
+            FROM
+              message
+            WHERE
+              id = \${message.id}
+          \`
+        `,
+      },
+      {
+        code: multiline`
+          sql.fragment\`
             \${null}
           UPDATE message
           SET
