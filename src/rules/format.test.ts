@@ -9,6 +9,21 @@ export default createRuleTester(
   {
     invalid: [
       {
+        code: multiline`
+          sql.fragment\`
+            SELECT
+              m1.ID
+            FROM
+              message m1
+            WHERE
+              m1.ID = \${message.id}
+          \`
+        `,
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
         name: 'identifierCase:lower',
         options: [
           {},
@@ -26,21 +41,6 @@ export default createRuleTester(
               m1.id = \${message.id}
           \`
         `,
-        code: multiline`
-          sql.fragment\`
-            SELECT
-              m1.ID
-            FROM
-              message m1
-            WHERE
-              m1.ID = \${message.id}
-          \`
-        `,
-        errors: [
-          {
-            messageId: 'format',
-          },
-        ],
       },
       {
         code: multiline`
