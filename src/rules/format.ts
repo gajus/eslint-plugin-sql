@@ -16,10 +16,10 @@ type Options = [
     sqlTag?: string;
   },
   {
-    keywordCase?: 'lower' | 'preserve' | 'upper';
-    dataTypeCase?: 'preserve' | 'upper' | 'lower';
-    functionCase?: 'preserve' | 'upper' | 'lower';
+    dataTypeCase?: 'lower' | 'preserve' | 'upper';
     denseOperators?: boolean;
+    functionCase?: 'lower' | 'preserve' | 'upper';
+    keywordCase?: 'lower' | 'preserve' | 'upper';
     language?:
       | 'bigquery'
       | 'db2'
@@ -269,21 +269,21 @@ export const rule = createRule<Options, MessageIds>({
       {
         additionalProperties: false,
         properties: {
-          keywordCase: {
+          dataTypeCase: {
             default: 'preserve',
             enum: ['lower', 'upper', 'preserve'],
             type: 'string',
           },
           denseOperators: {
-            type: 'boolean',
             default: false,
+            type: 'boolean',
           },
           functionCase: {
             default: 'preserve',
             enum: ['lower', 'upper', 'preserve'],
             type: 'string',
           },
-          dataTypeCase: {
+          keywordCase: {
             default: 'preserve',
             enum: ['lower', 'upper', 'preserve'],
             type: 'string',
