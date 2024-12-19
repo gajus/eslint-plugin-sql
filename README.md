@@ -2,7 +2,6 @@
 <a name="eslint-plugin-sql"></a>
 # eslint-plugin-sql
 
-[![NPM version](http://img.shields.io/npm/v/eslint-plugin-sql.svg?style=flat-square)](https://www.npmjs.org/package/eslint-plugin-sql)
 [![Canonical Code Style](https://img.shields.io/badge/code%20style-canonical-blue.svg?style=flat-square)](https://github.com/gajus/canonical)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kuizinas.svg?style=social&label=Follow)](https://twitter.com/kuizinas)
 
@@ -96,7 +95,7 @@ _The `--fix` option on the command line automatically fixes problems reported by
 
 Matches queries in template literals. Warns when query formatting does not match the configured format (see Options).
 
-This rule is used to format the queries using [pg-formatter](https://github.com/gajus/pg-formatter).
+This rule is used to format the queries using [sql-formatter](https://github.com/sql-formatter-org/sql-formatter).
 
 <a name="user-content-eslint-plugin-sql-rules-format-options"></a>
 <a name="eslint-plugin-sql-rules-format-options"></a>
@@ -106,14 +105,176 @@ The first option is an object with the following configuration.
 
 |configuration|format|default|description|
 |---|---|---|---|
-|`ignoreBaseIndent`|boolean|`false`|Does not leave base indent before linting.|
 |`ignoreExpressions`|boolean|`false`|Does not format template literals that contain expressions.|
 |`ignoreInline`|boolean|`true`|Does not format queries that are written on a single line.|
 |`ignoreStartWithNewLine`|boolean|`true`|Does not remove `\n` at the beginning of queries.|
 |`ignoreTagless`|boolean|`true`|Does not format queries that are written without using `sql` tag.|
+|`retainBaseIndent`|boolean|`true`|Uses the first line of the query as the base indent.|
 |`sqlTag`|string|`sql`|Template tag name for SQL.|
 
-The second option is an object with the [`pg-formatter` configuration](https://github.com/gajus/pg-formatter#configuration).
+The second option is an object with the [`sql-formatter` configuration](https://github.com/sql-formatter-org/sql-formatter?tab=readme-ov-file#configuration-options).
+
+|configuration|default|description|
+|---|---|---|
+|`useTabs`|boolean|`false`|Use tabs for indentation.|
+|`tabSize`|2|Number of spaces per indentation.|
+|`language`|`sql`|Language of the query.|
+
+The following patterns are considered problems:
+
+```js
+sql`
+  SELECT
+    1
+`
+// Options: [{},{"tabWidth":4}]
+// Message: undefined
+// Fixed code: 
+// sql`
+//   SELECT
+//       1
+// `
+
+sql.type({ id: z.number() })`
+  SELECT
+    1
+`
+// Options: [{},{"tabWidth":4}]
+// Message: undefined
+// Fixed code: 
+// sql.type({ id: z.number() })`
+//   SELECT
+//       1
+// `
+
+sql.typeAlias('void')`
+  SELECT
+    1
+`
+// Options: [{},{"tabWidth":4}]
+// Message: undefined
+// Fixed code: 
+// sql.typeAlias('void')`
+//   SELECT
+//       1
+// `
+
+`SELECT 1`
+// Options: [{"ignoreInline":false,"ignoreTagless":false},{}]
+// Message: undefined
+// Fixed code: 
+// `
+//   SELECT
+//     1
+// `
+
+`SELECT 2`
+// Options: [{"ignoreInline":false,"ignoreTagless":false},{"tabWidth":2}]
+// Message: undefined
+// Fixed code: 
+// `
+//   SELECT
+//     2
+// `
+
+sql.unsafe`SELECT 3`
+// Options: [{"ignoreInline":false},{}]
+// Message: undefined
+// Fixed code: 
+// sql.unsafe`
+//   SELECT
+//     3
+// `
+
+sql.type()`SELECT 3`
+// Options: [{"ignoreInline":false},{}]
+// Message: undefined
+// Fixed code: 
+// sql.type()`
+//   SELECT
+//     3
+// `
+
+`SELECT ${'foo'} FROM ${'bar'}`
+// Options: [{"ignoreInline":false,"ignoreTagless":false},{}]
+// Message: undefined
+// Fixed code: 
+// `
+//   SELECT
+//     ${'foo'}
+//   FROM
+//     ${'bar'}
+// `
+
+const code = sql`
+  SELECT
+      foo
+  FROM
+      bar
+`
+// Options: [{},{}]
+// Message: undefined
+// Fixed code: 
+// const code = sql`
+//   SELECT
+//     foo
+//   FROM
+//     bar
+// `
+
+SQL`SELECT 1`
+// Options: [{"ignoreInline":false,"sqlTag":"SQL"},{}]
+// Message: undefined
+// Fixed code: 
+// SQL`
+//   SELECT
+//     1
+// `
+```
+
+The following patterns are not considered problems:
+
+```js
+`
+# A
+## B
+### C
+`
+
+sql`SELECT 1`
+// Options: [{"ignoreInline":true},{}]
+
+`SELECT 2`
+// Options: [{"ignoreTagless":true},{}]
+
+const code = sql`
+  SELECT
+    ${'foo'}
+  FROM
+    ${'bar'}
+`
+// Options: [{"ignoreExpressions":true,"ignoreInline":false,"ignoreTagless":false},{}]
+
+const code = sql`
+  SELECT
+    ${'foo'}
+  FROM
+    ${'bar'}
+`
+// Options: [{},{}]
+
+const code = sql`
+  DROP TABLE foo
+`
+// Options: [{},{}]
+
+const code = sql`
+  DROP TABLE foo;
+
+  DROP TABLE foo;
+`
+// Options: [{},{}]
+```
 
 
 
@@ -138,6 +299,42 @@ The first option is an object with the following configuration.
 |---|---|---|---|
 |`allowLiteral`|boolean|`false`|Controls whether `sql` tag is required for template literals containing literal queries, i.e. template literals without expressions.|
 |`sqlTag`|string|`sql`|Template tag name for SQL.|
+
+The following patterns are considered problems:
+
+```js
+`SELECT 1`
+// Message: undefined
+
+`SELECT ${'foo'}`
+// Message: undefined
+
+foo`SELECT ${'bar'}`
+// Message: undefined
+
+`SELECT ?`
+// Message: undefined
+
+foo`SELECT ${'bar'}`
+// Options: [{"sqlTag":"SQL"}]
+// Message: undefined
+```
+
+The following patterns are not considered problems:
+
+```js
+sql.unsafe`SELECT 3`
+
+`SELECT 1`
+// Options: [{"allowLiteral":true}]
+
+sql`SELECT 1`
+
+sql`SELECT ${'foo'}`
+
+SQL`SELECT ${'bar'}`
+// Options: [{"sqlTag":"SQL"}]
+```
 
 
 

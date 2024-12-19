@@ -1,7 +1,5 @@
-// @flow
-
-import format from './rules/format';
-import noUnsafeQuery from './rules/noUnsafeQuery';
+import { rule as format } from './rules/format';
+import { rule as noUnsafeQuery } from './rules/noUnsafeQuery';
 
 const rules = {
   format,

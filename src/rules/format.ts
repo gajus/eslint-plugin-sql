@@ -1,106 +1,227 @@
-import dropBaseIndent from '../utilities/dropBaseIndent';
-import isSqlQuery from '../utilities/isSqlQuery';
-import { generate } from 'astring';
-import { format } from 'pg-formatter';
+import { createRule } from '../factories/createRule';
+import { dropBaseIndent } from '../utilities/dropBaseIndent';
+import { isSqlQuery } from '../utilities/isSqlQuery';
+import { AST_NODE_TYPES } from '@typescript-eslint/utils';
+import { format } from 'sql-formatter';
 
-const create = (context) => {
-  const placeholderRule = context.settings?.sql?.placeholderRule;
+type MessageIds = 'format';
 
-  const pluginOptions = context.options?.[0] || {};
+type Options = [
+  {
+    ignoreExpressions?: boolean;
+    ignoreInline?: boolean;
+    ignoreStartWithNewLine?: boolean;
+    ignoreTagless?: boolean;
+    retainBaseIndent?: boolean;
+    sqlTag?: string;
+  },
+  {
+    keywordCase?: 'lower' | 'preserve' | 'upper';
+    language?:
+      | 'bigquery'
+      | 'db2'
+      | 'db2i'
+      | 'hive'
+      | 'mariadb'
+      | 'mysql'
+      | 'n1ql'
+      | 'plsql'
+      | 'postgresql'
+      | 'redshift'
+      | 'singlestoredb'
+      | 'snowflake'
+      | 'spark'
+      | 'sql'
+      | 'sqlite'
+      | 'tidb'
+      | 'transactsql'
+      | 'trino'
+      | 'tsql';
+    tabWidth?: number;
+    useTabs?: boolean;
+  },
+];
 
-  const sqlTag = pluginOptions.sqlTag;
-  const ignoreExpressions = pluginOptions.ignoreExpressions === true;
-  const ignoreInline = pluginOptions.ignoreInline !== false;
-  const ignoreTagless = pluginOptions.ignoreTagless !== false;
-  const ignoreStartWithNewLine = pluginOptions.ignoreStartWithNewLine !== false;
-  const ignoreBaseIndent = pluginOptions.ignoreBaseIndent === true;
-
-  return {
-    TemplateLiteral(node) {
-      const tagName =
-        node.parent.tag?.name ??
-        node.parent.tag?.object?.name ??
-        node.parent.tag?.callee?.object?.name;
-
-      const sqlTagIsPresent = tagName === sqlTag;
-
-      if (ignoreTagless && !sqlTagIsPresent) {
-        return;
-      }
-
-      if (ignoreExpressions && node.quasis.length !== 1) {
-        return;
-      }
-
-      const magic = '"gajus-eslint-plugin-sql"';
-
-      let literal = node.quasis
-        .map((quasi) => {
-          return quasi.value.raw;
-        })
-        .join(magic);
-
-      if (!sqlTagIsPresent && !isSqlQuery(literal, placeholderRule)) {
-        return;
-      }
-
-      if (ignoreInline && !literal.includes('\n')) {
-        return;
-      }
-
-      if (ignoreBaseIndent) {
-        literal = dropBaseIndent(literal);
-      }
-
-      let formatted = format(literal, context.options[1]);
-
-      if (
-        ignoreStartWithNewLine &&
-        literal.startsWith('\n') &&
-        !formatted.startsWith('\n')
-      ) {
-        formatted = '\n' + formatted;
-      }
-
-      if (formatted.endsWith('\n\n')) {
-        formatted = formatted.replace(/\n\n$/u, '\n');
-      }
-
-      if (formatted !== literal) {
-        context.report({
-          fix: (fixer) => {
-            let final = formatted;
-
-            const expressionCount = node.expressions.length;
-            let index = 0;
-
-            while (index <= expressionCount - 1) {
-              final = final.replace(
-                magic,
-                '${' + generate(node.expressions[index]) + '}',
-              );
-
-              index++;
-            }
-
-            return fixer.replaceTextRange(
-              [
-                node.quasis[0].range[0],
-                node.quasis[node.quasis.length - 1].range[1],
-              ],
-              '`' + (final.startsWith('\n') ? final : '\n' + final) + '`',
-            );
-          },
-          message: 'Format the query',
-          node,
-        });
-      }
-    },
-  };
+const padIndent = (subject: string, spaces: number) => {
+  return subject
+    .split('\n')
+    .map((line) => {
+      return line.length > 0 ? ' '.repeat(spaces) + line : line;
+    })
+    .join('\n');
 };
 
-export = {
-  create,
+const findFirstMeaningfulIndent = (subject: string) => {
+  for (const line of subject.split('\n')) {
+    if (line.trim().length > 0) {
+      return line.search(/\S/u);
+    }
+  }
+
+  return 0;
+};
+
+export const rule = createRule<Options, MessageIds>({
+  create: (context) => {
+    // @ts-expect-error I am ont clear how to type this
+    const placeholderRule = context.settings?.sql?.placeholderRule;
+
+    const pluginOptions = context.options?.[0] || {
+      ignoreExpressions: false,
+      ignoreInline: true,
+      ignoreStartWithNewLine: true,
+      ignoreTagless: true,
+      retainBaseIndent: true,
+      sqlTag: 'sql',
+    };
+
+    const {
+      ignoreExpressions,
+      ignoreInline,
+      ignoreStartWithNewLine,
+      ignoreTagless,
+      retainBaseIndent,
+      sqlTag,
+    } = pluginOptions;
+
+    const tabWidth = context.options?.[1]?.tabWidth ?? 2;
+
+    return {
+      TemplateLiteral(node) {
+        const tagName =
+          // @ts-expect-error TODO
+          node.parent.tag?.name ??
+          // @ts-expect-error TODO
+          node.parent.tag?.object?.name ??
+          // @ts-expect-error TODO
+          node.parent.tag?.callee?.object?.name;
+
+        const sqlTagIsPresent = tagName === sqlTag;
+
+        const templateElement = node.quasis.find((quasi) => {
+          return quasi.type === AST_NODE_TYPES.TemplateElement;
+        });
+
+        if (!templateElement) {
+          return;
+        }
+
+        let indentAnchorOffset = findFirstMeaningfulIndent(
+          templateElement.value.raw,
+        );
+
+        if (templateElement.value.raw.search(/\S/u) === -1) {
+          const lines = templateElement.value.raw.split('\n');
+
+          const lastLine = lines[lines.length - 1];
+
+          if (!lastLine) {
+            throw new Error('Unexpected');
+          }
+
+          indentAnchorOffset = lastLine.length;
+        } else if (templateElement.value.raw.search(/\S/u) === 0) {
+          indentAnchorOffset = tabWidth;
+        }
+
+        if (ignoreTagless && !sqlTagIsPresent) {
+          return;
+        }
+
+        if (ignoreExpressions && node.quasis.length !== 1) {
+          return;
+        }
+
+        const magic = '"gajus-eslint-plugin-sql"';
+
+        const literal = node.quasis
+          .map((quasi) => {
+            return quasi.value.raw;
+          })
+          .join(magic);
+
+        if (!sqlTagIsPresent && !isSqlQuery(literal, placeholderRule)) {
+          return;
+        }
+
+        if (ignoreInline && !literal.includes('\n')) {
+          return;
+        }
+
+        let formatted = format(literal, {
+          ...context.options[1],
+          tabWidth,
+        });
+
+        if (
+          ignoreStartWithNewLine &&
+          literal.startsWith('\n') &&
+          !formatted.startsWith('\n')
+        ) {
+          formatted = '\n' + formatted;
+        }
+
+        if (formatted.endsWith('\n\n')) {
+          formatted = formatted.replace(/\n\n$/u, '\n');
+        }
+
+        if (retainBaseIndent) {
+          formatted = padIndent(formatted, indentAnchorOffset);
+        } else {
+          formatted = dropBaseIndent(literal);
+        }
+
+        formatted +=
+          '\n' + ' '.repeat(Math.max(indentAnchorOffset - tabWidth, 0));
+
+        if (formatted !== literal) {
+          context.report({
+            fix: (fixer) => {
+              let final = formatted;
+
+              const expressionCount = node.expressions.length;
+
+              let index = 0;
+
+              while (index <= expressionCount - 1) {
+                final = final.replace(
+                  magic,
+                  '${' +
+                    context.sourceCode.getText(node.expressions[index]) +
+                    '}',
+                );
+
+                index++;
+              }
+
+              return fixer.replaceTextRange(
+                [
+                  node.quasis[0].range[0],
+                  node.quasis[node.quasis.length - 1].range[1],
+                ],
+                '`' + (final.startsWith('\n') ? final : '\n' + final) + '`',
+              );
+            },
+            messageId: 'format',
+            node,
+          });
+        }
+      },
+    };
+  },
+  defaultOptions: [
+    {
+      ignoreExpressions: false,
+      ignoreInline: true,
+      ignoreStartWithNewLine: true,
+      ignoreTagless: true,
+      retainBaseIndent: true,
+      sqlTag: 'sql',
+    },
+    {
+      tabWidth: 2,
+    },
+  ],
   meta: {
     docs: {
       description:
@@ -108,14 +229,13 @@ export = {
       url: 'https://github.com/gajus/eslint-plugin-sql#eslint-plugin-sql-rules-format',
     },
     fixable: 'code',
+    messages: {
+      format: 'Format the query',
+    },
     schema: [
       {
         additionalProperties: false,
         properties: {
-          ignoreBaseIndent: {
-            default: false,
-            type: 'boolean',
-          },
           ignoreExpressions: {
             default: false,
             type: 'boolean',
@@ -132,6 +252,10 @@ export = {
             default: true,
             type: 'boolean',
           },
+          retainBaseIndent: {
+            default: true,
+            type: 'boolean',
+          },
           sqlTag: {
             default: 'sql',
             type: 'string',
@@ -142,34 +266,20 @@ export = {
       {
         additionalProperties: false,
         properties: {
-          anonymize: {
-            default: false,
-            type: 'boolean',
-          },
-          commaBreak: {
-            default: false,
-            type: 'boolean',
-          },
-          functionCase: {
-            default: 'lowercase',
-            type: 'string',
-          },
           keywordCase: {
-            default: 'uppercase',
+            default: 'preserve',
+            enum: ['lower', 'upper', 'preserve'],
             type: 'string',
           },
-          noRcFile: {
-            default: false,
-            type: 'boolean',
+          language: {
+            default: 'sql',
+            type: 'string',
           },
-          spaces: {
+          tabWidth: {
+            default: 2,
             type: 'number',
           },
-          stripComments: {
-            default: false,
-            type: 'boolean',
-          },
-          tabs: {
+          useTabs: {
             default: false,
             type: 'boolean',
           },
@@ -179,4 +289,5 @@ export = {
     ],
     type: 'suggestion',
   },
-};
+  name: 'format',
+});

@@ -2,7 +2,7 @@
  * @file This script is used to inline assertions into the README.md documents.
  */
 
-import glob from 'glob';
+import { glob } from 'glob';
 import _ from 'lodash';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -44,20 +44,20 @@ const formatCodeSnippet = (setup: Setup) => {
 
 const getAssertions = () => {
   const assertionFiles = glob.sync(
-    path.resolve(__dirname, '../test/rules/assertions/*.ts'),
+    path.resolve(__dirname, '../../src/rules/*.test.ts'),
   );
 
   const assertionNames = _.map(assertionFiles, (filePath) => {
-    return path.basename(filePath, '.ts');
+    return path.basename(filePath, '.test.ts');
   });
 
   const assertionCodes = _.map(assertionFiles, (filePath) => {
-    // eslint-disable-next-line node/global-require, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
     const codes = require(filePath);
 
     return {
-      invalid: _.map(codes.invalid, formatCodeSnippet),
-      valid: _.map(codes.valid, formatCodeSnippet),
+      invalid: _.map(codes.default.testCases.invalid, formatCodeSnippet),
+      valid: _.map(codes.default.testCases.valid, formatCodeSnippet),
     };
   });
 
@@ -65,11 +65,12 @@ const getAssertions = () => {
 };
 
 const updateDocuments = (assertions) => {
-  const readmeDocumentPath = path.join(__dirname, '../README.md');
+  const readmeDocumentPath = path.join(__dirname, '../../README.md');
 
   let documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
 
   documentBody = documentBody.replaceAll(
+    // eslint-disable-next-line regexp/no-unused-capturing-group
     /<!-- assertions ([a-z]+) -->/giu,
     (assertionsBlock) => {
       let exampleBody = '';
