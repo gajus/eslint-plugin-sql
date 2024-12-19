@@ -109,7 +109,17 @@ export const rule = createRule<Options, MessageIds>({
           templateElement.value.raw,
         );
 
-        if (templateElement.value.raw.search(/\S/u) === 0) {
+        if (templateElement.value.raw.search(/\S/u) === -1) {
+          const lines = templateElement.value.raw.split('\n');
+
+          const lastLine = lines[lines.length - 1];
+
+          if (!lastLine) {
+            throw new Error('Unexpected');
+          }
+
+          indentAnchorOffset = lastLine.length;
+        } else if (templateElement.value.raw.search(/\S/u) === 0) {
           indentAnchorOffset = tabWidth;
         }
 
@@ -137,14 +147,10 @@ export const rule = createRule<Options, MessageIds>({
           return;
         }
 
-        // console.log('literal', literal);
-
         let formatted = format(literal, {
           ...context.options[1],
           tabWidth,
         });
-
-        // console.log('formatted', formatted);
 
         if (
           ignoreStartWithNewLine &&
