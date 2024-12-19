@@ -101,6 +101,14 @@ export const rule = createRule<Options, MessageIds>({
 
         const sqlTagIsPresent = tagName === sqlTag;
 
+        if (ignoreTagless && !sqlTagIsPresent) {
+          return;
+        }
+
+        if (ignoreExpressions && node.quasis.length !== 1) {
+          return;
+        }
+
         const templateElement = node.quasis.find((quasi) => {
           return quasi.type === AST_NODE_TYPES.TemplateElement;
         });
@@ -118,21 +126,13 @@ export const rule = createRule<Options, MessageIds>({
 
           const lastLine = lines[lines.length - 1];
 
-          if (!lastLine) {
-            throw new Error('Unexpected');
-          }
-
-          indentAnchorOffset = lastLine.length;
+          if (lastLine) {
+            indentAnchorOffset = lastLine.length;
+          } else {
+            indentAnchorOffset = 0;
+          }          
         } else if (templateElement.value.raw.search(/\S/u) === 0) {
           indentAnchorOffset = tabWidth;
-        }
-
-        if (ignoreTagless && !sqlTagIsPresent) {
-          return;
-        }
-
-        if (ignoreExpressions && node.quasis.length !== 1) {
-          return;
         }
 
         const magic = '"gajus-eslint-plugin-sql"';
