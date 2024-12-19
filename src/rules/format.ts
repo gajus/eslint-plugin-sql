@@ -130,7 +130,7 @@ export const rule = createRule<Options, MessageIds>({
             indentAnchorOffset = lastLine.length;
           } else {
             indentAnchorOffset = 0;
-          }          
+          }
         } else if (templateElement.value.raw.search(/\S/u) === 0) {
           indentAnchorOffset = tabWidth;
         }
