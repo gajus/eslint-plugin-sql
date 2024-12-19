@@ -9,6 +9,66 @@ export default createRuleTester(
   {
     invalid: [
       {
+        name: 'identifierCase:lower',
+        options: [
+          {},
+          {
+            identifierCase: 'lower',
+          },
+        ],
+        output: multiline`
+          sql.fragment\`
+            SELECT
+              m1.id
+            FROM
+              message m1
+            WHERE
+              m1.id = \${message.id}
+          \`
+        `,
+        code: multiline`
+          sql.fragment\`
+            SELECT
+              m1.ID
+            FROM
+              message m1
+            WHERE
+              m1.ID = \${message.id}
+          \`
+        `,
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
+      },
+      {
+        code: multiline`
+          sql.fragment\`
+            SELECT id::NUMERIC
+          \`
+        `,
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
+        name: 'dataTypeCase:lower',
+        options: [
+          {},
+          {
+            dataTypeCase: 'lower',
+            language: 'postgresql',
+          },
+        ],
+        output: multiline`
+          sql.fragment\`
+            SELECT
+              id::numeric
+          \`
+        `,
+      },
+      {
         code: multiline`
           sql.fragment\`
             SELECT

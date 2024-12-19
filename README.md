@@ -122,11 +122,43 @@ The second option is an object with the [`sql-formatter` configuration](https://
 |`keywordCase`|`preserve`|Determines the case of keywords (`preserve`, `upper`, `lower`).|
 |`dataTypeCase`|`preserve`|Determines the case of data types (`preserve`, `upper`, `lower`).|
 |`denseOperators`|`false`|Decides whitespace around operators.|
+|`identifierCase`|`preserve`|Determines the case of identifiers (`preserve`, `upper`, `lower`).|
 |`functionCase`|`preserve`|Determines the case of functions (`preserve`, `upper`, `lower`).|
 
 The following patterns are considered problems:
 
 ```js
+sql.fragment`
+  SELECT
+    m1.ID
+  FROM
+    message m1
+  WHERE
+    m1.ID = ${message.id}
+`
+// Options: [{},{"identifierCase":"lower"}]
+// Message: undefined
+// Fixed code: 
+// sql.fragment`
+//   SELECT
+//     m1.id
+//   FROM
+//     message m1
+//   WHERE
+//     m1.id = ${message.id}
+// `
+
+sql.fragment`
+  SELECT id::NUMERIC
+`
+// Options: [{},{"dataTypeCase":"lower","language":"postgresql"}]
+// Message: undefined
+// Fixed code: 
+// sql.fragment`
+//   SELECT
+//     id::numeric
+// `
+
 sql.fragment`
   SELECT
     COUNT(*)
