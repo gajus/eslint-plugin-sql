@@ -5,21 +5,21 @@
     "url": "http://gajus.com"
   },
   "dependencies": {
-    "@typescript-eslint/utils": "^8.18.1",
+    "@typescript-eslint/utils": "^8.19.0",
     "debug": "^4.4.0",
     "lodash": "^4.17.21",
     "multiline-ts": "^4.0.1",
-    "sql-formatter": "^15.4.6",
+    "sql-formatter": "^15.4.9",
     "sql-parse": "^0.1.5"
   },
   "description": "SQL linting rules for ESLint.",
   "devDependencies": {
-    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/github": "^11.0.1",
     "@semantic-release/npm": "^12.0.1",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.10.2",
-    "@typescript-eslint/rule-tester": "^8.18.1",
+    "@types/node": "^22.10.5",
+    "@typescript-eslint/rule-tester": "^8.19.0",
     "cspell": "^8.17.1",
     "eslint": "^9.17.0",
     "eslint-config-canonical": "44.3.36",
@@ -27,7 +27,7 @@
     "glob": "^11.0.0",
     "husky": "^9.1.7",
     "mocha": "^11.0.1",
-    "semantic-release": "^24.2.0",
+    "semantic-release": "^24.2.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },
