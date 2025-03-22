@@ -1,5 +1,5 @@
-import { createRuleTester } from '../factories/createRuleTester';
-import { rule } from './format';
+import { createRuleTester } from '../factories/createRuleTester.js';
+import { rule } from './format.js';
 import multiline from 'multiline-ts';
 
 export default createRuleTester(

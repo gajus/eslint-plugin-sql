@@ -17,6 +17,7 @@
     "useUnknownInCatchVariables": false
   },
   "include": [
-    "src"
+    "src",
+    "eslint.config.ts"
   ]
 }

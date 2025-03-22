@@ -1,5 +1,5 @@
-import { createRuleTester } from '../factories/createRuleTester';
-import { rule } from './noUnsafeQuery';
+import { createRuleTester } from '../factories/createRuleTester.js';
+import { rule } from './noUnsafeQuery.js';
 
 export default createRuleTester(
   'no-unsafe-query',

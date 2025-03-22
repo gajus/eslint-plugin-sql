@@ -1,6 +1,6 @@
-import { createRule } from '../factories/createRule';
-import { dropBaseIndent } from '../utilities/dropBaseIndent';
-import { isSqlQuery } from '../utilities/isSqlQuery';
+import { createRule } from '../factories/createRule.js';
+import { dropBaseIndent } from '../utilities/dropBaseIndent.js';
+import { isSqlQuery } from '../utilities/isSqlQuery.js';
 import { AST_NODE_TYPES } from '@typescript-eslint/utils';
 import { format } from 'sql-formatter';
 

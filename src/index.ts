@@ -1,12 +1,12 @@
-import { rule as format } from './rules/format';
-import { rule as noUnsafeQuery } from './rules/noUnsafeQuery';
+import { rule as format } from './rules/format.js';
+import { rule as noUnsafeQuery } from './rules/noUnsafeQuery.js';
 
 const rules = {
   format,
   'no-unsafe-query': noUnsafeQuery,
 };
 
-export = {
+export default {
   rules,
   rulesConfig: {
     format: 0,

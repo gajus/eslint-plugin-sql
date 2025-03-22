@@ -1,7 +1,7 @@
 /* global describe */
 /* global it */
 
-import { isSqlQuery } from './isSqlQuery';
+import { isSqlQuery } from './isSqlQuery.js';
 import assert from 'node:assert';
 
 describe('isSqlQuery', () => {

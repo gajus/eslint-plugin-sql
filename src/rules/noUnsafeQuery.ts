@@ -1,5 +1,5 @@
-import { createRule } from '../factories/createRule';
-import { isSqlQuery } from '../utilities/isSqlQuery';
+import { createRule } from '../factories/createRule.js';
+import { isSqlQuery } from '../utilities/isSqlQuery.js';
 import createDebug from 'debug';
 
 const debug = createDebug('eslint-plugin-sql:rule:no-unsafe-query');

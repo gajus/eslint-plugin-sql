@@ -1,4 +1,4 @@
-import { dropBaseIndent } from './dropBaseIndent';
+import { dropBaseIndent } from './dropBaseIndent.js';
 import multiline from 'multiline-ts';
 import assert from 'node:assert';
 
