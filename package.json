@@ -22,14 +22,15 @@
     "@typescript-eslint/rule-tester": "^8.27.0",
     "cspell": "^8.17.5",
     "eslint": "^9.23.0",
-    "eslint-config-canonical": "44.5.1",
+    "eslint-config-canonical": "44.7.0",
     "gitdown": "^4.1.1",
     "glob": "^11.0.1",
     "husky": "^9.1.7",
     "mocha": "^11.1.0",
     "semantic-release": "^24.2.3",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.27.0"
   },
   "engines": {
     "node": ">=12"
@@ -64,6 +65,7 @@
     "test": "npm run test:mocha",
     "test:mocha": "mocha --require tsx src/**/*.test.ts"
   },
+  "type": "module",
   "types": "./dist/index.d.ts",
   "version": "1.0.1"
 }
