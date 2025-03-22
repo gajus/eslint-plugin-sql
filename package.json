@@ -22,7 +22,7 @@
     "@typescript-eslint/rule-tester": "^8.27.0",
     "cspell": "^8.17.5",
     "eslint": "^9.23.0",
-    "eslint-config-canonical": "44.7.0",
+    "eslint-config-canonical": "44.8.2",
     "gitdown": "^4.1.1",
     "glob": "^11.0.1",
     "husky": "^9.1.7",
