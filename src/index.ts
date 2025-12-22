@@ -1,7 +1,7 @@
-import type { Linter } from 'eslint';
+import pkg from '../package.json';
 import { rule as format } from './rules/format.js';
 import { rule as noUnsafeQuery } from './rules/noUnsafeQuery.js';
-import pkg from '../package.json';
+import { type Linter } from 'eslint';
 
 const rules = {
   format,

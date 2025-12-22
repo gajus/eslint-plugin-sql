@@ -20,6 +20,6 @@
   "include": [
     "src",
     "eslint.config.ts",
-    "test/config.test.ts"
+    "test/**/*.ts"
   ]
 }
