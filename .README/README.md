@@ -23,8 +23,58 @@ npm install eslint-plugin-sql --save-dev
 
 ## Configuration
 
+### ESLint 9+ (Flat Config)
+
+1. Import `eslint-plugin-sql`.
+2. Use the recommended configuration or customize rules.
+
+```javascript
+import sql from 'eslint-plugin-sql';
+
+export default [
+  // Use the recommended configuration
+  sql.configs['flat/recommended'],
+  {
+     rules: {
+         'sql/format': ['error', { ignoreInline: false }]
+     }
+  }
+];
+```
+
+### ESLint 8 (.eslintrc)
+
 1. Add `plugins` section and specify `eslint-plugin-sql` as a plugin.
-1. Enable rules.
+2. Enable rules.
+
+```json
+{
+  "plugins": [
+    "sql"
+  ],
+  "rules": {
+    "sql/format": [
+      2,
+      {
+        "ignoreExpressions": false,
+        "ignoreInline": true,
+        "ignoreTagless": true
+      }
+    ],
+    "sql/no-unsafe-query": [
+      2,
+      {
+        "allowLiteral": false
+      }
+    ]
+  },
+  "settings": {
+    "sql": {
+      "placeholderRule": "\\?"
+    }
+  }
+}
+```
 
 <!-- -->
 
@@ -50,7 +100,6 @@ npm install eslint-plugin-sql --save-dev
     ]
   }
 }
-
 ```
 
 ## Settings
