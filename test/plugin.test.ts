@@ -13,8 +13,8 @@ describe('plugin', () => {
     assert.ok(plugin.rules['no-unsafe-query']);
   });
 
-  it('exports configs.recommended', () => {
-    const recommended = plugin.configs.recommended as Linter.FlatConfig;
+  it("exports configs['flat/recommended']", () => {
+    const recommended = plugin.configs['flat/recommended'] as Linter.FlatConfig;
     assert.ok(recommended);
     // Flat config structure
     assert.ok(recommended.plugins);

@@ -18,17 +18,17 @@ const plugin = {
 };
 
 Object.assign(plugin.configs, {
-  'legacy-recommended': {
-    plugins: ['sql'],
+  'flat/recommended': {
+    plugins: {
+      sql: plugin,
+    },
     rules: {
       'sql/format': 'error',
       'sql/no-unsafe-query': 'error',
     },
   },
-  recommended: {
-    plugins: {
-      sql: plugin,
-    },
+  'legacy-recommended': {
+    plugins: ['sql'],
     rules: {
       'sql/format': 'error',
       'sql/no-unsafe-query': 'error',

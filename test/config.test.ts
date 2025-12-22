@@ -6,7 +6,7 @@ describe('Integration: Configs', () => {
   it('should report errors with recommended config (Flat)', async () => {
     const eslint = new ESLint({
       overrideConfig: [
-        plugin.configs.recommended,
+        plugin.configs['flat/recommended'],
         {
           files: ['**'],
           languageOptions: {
