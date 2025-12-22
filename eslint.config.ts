@@ -9,6 +9,12 @@ export default tseslint.config(
     },
   },
   {
+    files: ['src/index.ts'],
+    rules: {
+      'canonical/filename-match-exported': 0,
+    },
+  },
+  {
     ignores: [
       'package-lock.json',
       'dist',
