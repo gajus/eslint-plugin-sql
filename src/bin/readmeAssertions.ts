@@ -8,16 +8,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const filename = fileURLToPath(import.meta.url);
-const dirname = path.dirname(filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 type EslintError = {
-  message: string;
-};
-
-type RuleAssertions = {
-  invalid: string[];
-  valid: string[];
+  message?: string;
+  messageId?: string;
 };
 
 type Setup = {
@@ -27,10 +23,7 @@ type Setup = {
   output: string;
 };
 
-const formatCodeSnippet = (
-  setup: Setup,
-  ruleMessages: Record<string, string>,
-) => {
+const formatCodeSnippet = (setup: Setup, ruleMessages: Record<string, string>) => {
   const paragraphs: string[] = [];
 
   paragraphs.push(setup.code);
@@ -41,10 +34,7 @@ const formatCodeSnippet = (
 
   if (setup.errors) {
     for (const error of setup.errors) {
-      const message =
-        error.message ||
-        (error.messageId ? ruleMessages[error.messageId] : null) ||
-        error.messageId;
+      const message = error.message || (error.messageId ? ruleMessages[error.messageId] : null) || error.messageId;
       paragraphs.push('// Message: ' + message);
     }
   }
@@ -60,57 +50,47 @@ const formatCodeSnippet = (
 
 const getAssertions = async () => {
   const ruleFiles = await glob(
-    path.resolve(dirname, '../../src/rules/!(*.test).ts'),
+    path.resolve(__dirname, '../../src/rules/!(*.test).ts'),
   );
 
-  const ruleAssertionsMap: Record<string, RuleAssertions> = {};
+  const assertions: Record<string, any> = {};
 
-  const assertionCodes = _.map(assertionFiles, (filePath) => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-    const codes = require(filePath);
+  for (const ruleFile of ruleFiles) {
+    const ruleName = path.basename(ruleFile, '.ts');
+    const testFile = ruleFile.replace('.ts', '.test.ts');
 
-    return {
-      invalid: _.map(codes.default.testCases.invalid, formatCodeSnippet),
-      valid: _.map(codes.default.testCases.valid, formatCodeSnippet),
-    };
-  });
+    if (fs.existsSync(testFile)) {
+      const { rule } = await import(ruleFile);
+      const testModule = await import(testFile);
+      const ruleMessages = rule.meta.messages;
+      const testCases = testModule.default.testCases;
 
-      ruleAssertionsMap[ruleName] = {
-        invalid: _.map(testCases.invalid, (setup) =>
-          formatCodeSnippet(setup, ruleMessages),
-        ),
-        valid: _.map(testCases.valid, (setup) =>
-          formatCodeSnippet(setup, ruleMessages),
-        ),
+      assertions[ruleName] = {
+        invalid: _.map(testCases.invalid, (setup) => formatCodeSnippet(setup, ruleMessages)),
+        valid: _.map(testCases.valid, (setup) => formatCodeSnippet(setup, ruleMessages)),
       };
     }
   }
 
-  return ruleAssertionsMap;
+  return assertions;
 };
 
-const updateDocuments = (assertionsMap: Record<string, RuleAssertions>) => {
-  const readmeDocumentPath = path.join(dirname, '../../README.md');
+const updateDocuments = (assertions: Record<string, any>) => {
+  const readmeDocumentPath = path.join(__dirname, '../../README.md');
 
-  let documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
+  const documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
 
-  const newDocumentBody = documentBody.replaceAll(
-    /<!-- assertions ([a-z-]+) -->(?:[\s\S]*?<!-- end-assertions -->)?/giu,
+  const newDocumentBody = documentBody.replace(
+    /<!-- assertions ([a-z-]+) -->(?:[\S\s]*?<!-- end-assertions -->)?/giu,
     (match, ruleName) => {
       const assertionKey = _.camelCase(ruleName);
-      const ruleAssertions = assertionsMap[assertionKey];
-
-      const ruleName = /assertions ([a-z]+)/iu.exec(assertionsBlock)?.[1];
-
-      if (!ruleName) {
-        throw new Error('Rule name not found.');
-      }
-
-      const ruleAssertions = assertions[ruleName];
+      const ruleAssertions = assertions[assertionKey];
 
       if (!ruleAssertions) {
-        throw new Error('No assertions available for rule "' + ruleName + '".');
+        return match;
       }
+
+      let exampleBody = '';
 
       if (ruleAssertions.invalid.length) {
         exampleBody +=
@@ -126,12 +106,12 @@ const updateDocuments = (assertionsMap: Record<string, RuleAssertions>) => {
           '\n```\n\n';
       }
 
-      return exampleBody;
+      return `<!-- assertions ${ruleName} -->\n\n${exampleBody.trim()}\n\n<!-- end-assertions -->`;
     },
   );
 
-  fs.writeFileSync(readmeDocumentPath, documentBody);
+  fs.writeFileSync(readmeDocumentPath, newDocumentBody);
 };
 
-const generatedAssertions = await getAssertions();
-updateDocuments(generatedAssertions);
+const assertions = await getAssertions();
+updateDocuments(assertions);
