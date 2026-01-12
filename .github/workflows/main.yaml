@@ -1,17 +1,22 @@
 jobs:
-  test:
+  release:
     environment: release
-    name: Test
+    name: Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
     steps:
       - name: setup repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: setup node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '23'
+          node-version: '24'
       - run: npm install
       - run: npm run lint:eslint
       - run: npm run lint:tsc
@@ -20,9 +25,8 @@ jobs:
       - run: npm run build
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
-name: Test, build and release
+name: Release
 on:
   push:
     branches:
