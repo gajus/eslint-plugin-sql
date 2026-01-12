@@ -470,6 +470,39 @@ export default createRuleTester(
           \`
         `,
       },
+      {
+        code: multiline`
+          SQL\`
+            SELECT * FROM users WHERE user_id = :user_id
+          \`
+        `,
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
+        name: 'formats PostgreSQL query with named placeholder using paramTypes',
+        options: [
+          {
+            sqlTag: 'SQL',
+          },
+          {
+            keywordCase: 'upper',
+            language: 'postgresql',
+            paramTypes: { named: [':'] },
+          },
+        ],
+        output: multiline`
+          SQL\`
+            SELECT
+              *
+            FROM
+              users
+            WHERE
+              user_id = :user_id
+          \`
+        `,
+      },
     ],
     valid: [
       {
