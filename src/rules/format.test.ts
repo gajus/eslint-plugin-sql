@@ -503,6 +503,60 @@ export default createRuleTester(
           \`
         `,
       },
+      {
+        code: 'sql`\n\t\tSELECT\n\t\t\tid\n\t\tFROM profiles\n\t`',
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
+        name: 'preserves tab indentation when original uses tabs',
+        options: [
+          {},
+          {
+            language: 'postgresql',
+            useTabs: true,
+          },
+        ],
+        output: 'sql`\n\t\tSELECT\n\t\t\tid\n\t\tFROM\n\t\t\tprofiles\n\t`',
+      },
+      {
+        code: 'sql`\n\t\tSELECT\n\t\t\tid,\n\t\t\tname\n\t\tFROM profiles\n\t\tWHERE id = 1\n\t`',
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
+        name: 'formats query with tabs when useTabs is true',
+        options: [
+          {},
+          {
+            language: 'postgresql',
+            useTabs: true,
+          },
+        ],
+        output:
+          'sql`\n\t\tSELECT\n\t\t\tid,\n\t\t\tname\n\t\tFROM\n\t\t\tprofiles\n\t\tWHERE\n\t\t\tid = 1\n\t`',
+      },
+      {
+        code: 'sql`\n\t\tSELECT id FROM profiles\n\t`',
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
+        name: 'retainBaseIndent false with useTabs uses formatted output',
+        options: [
+          {
+            retainBaseIndent: false,
+          },
+          {
+            language: 'postgresql',
+            useTabs: true,
+          },
+        ],
+        output: 'sql`\nSELECT\n\tid\nFROM\n\tprofiles\n`',
+      },
     ],
     valid: [
       {

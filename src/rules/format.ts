@@ -53,23 +53,108 @@ type Options = [
   },
 ];
 
-const padIndent = (subject: string, spaces: number) => {
+const padIndent = (
+  subject: string,
+  indentString: string,
+  indentCount: number,
+) => {
   return subject
     .split('\n')
     .map((line) => {
-      return line.length > 0 ? ' '.repeat(spaces) + line : line;
+      return line.length > 0 ? indentString.repeat(indentCount) + line : line;
     })
     .join('\n');
 };
 
-const findFirstMeaningfulIndent = (subject: string) => {
+type IndentInfo = {
+  char: ' ' | '\t';
+  count: number;
+};
+
+const detectIndentation = (subject: string): IndentInfo => {
   for (const line of subject.split('\n')) {
     if (line.trim().length > 0) {
-      return line.search(/\S/u);
+      const match = line.match(/^(\t+|\u0020+)/u);
+      if (match) {
+        const leadingWhitespace = match[1];
+        return {
+          char: leadingWhitespace[0] === '\t' ? '\t' : ' ',
+          count: leadingWhitespace.length,
+        };
+      }
+
+      return { char: ' ', count: 0 };
     }
   }
 
-  return 0;
+  return { char: ' ', count: 0 };
+};
+
+const getClosingIndentation = (subject: string): IndentInfo => {
+  const lines = subject.split('\n');
+  const lastLine = lines[lines.length - 1];
+
+  if (lastLine && lastLine.trim().length === 0 && lastLine.length > 0) {
+    const char = lastLine[0] === '\t' ? '\t' : ' ';
+    return { char, count: lastLine.length };
+  }
+
+  return { char: ' ', count: 0 };
+};
+
+type IndentConfig = {
+  char: ' ' | '\t';
+  closingCount: number;
+  contentCount: number;
+};
+
+const calculateIndentConfig = (
+  templateRaw: string,
+  useTabs: boolean | undefined,
+  tabWidth: number,
+): IndentConfig => {
+  // Detect the original indentation style from the template
+  let detectedIndent = detectIndentation(templateRaw);
+
+  // If no meaningful content, try to detect from the closing line
+  const hasNoContent = templateRaw.search(/\S/u) === -1;
+  if (hasNoContent) {
+    detectedIndent = getClosingIndentation(templateRaw);
+  }
+
+  // Determine the indent character to use:
+  // 1. If useTabs is explicitly set, use that
+  // 2. Otherwise, use the detected indentation from the original template
+  const indentChar: ' ' | '\t' =
+    useTabs === undefined ? detectedIndent.char : useTabs ? '\t' : ' ';
+
+  // Calculate the indent count for the SQL content
+  let contentCount: number;
+  if (hasNoContent) {
+    // No meaningful content - use closing line indentation + 1 level
+    contentCount =
+      indentChar === '\t'
+        ? detectedIndent.count + 1
+        : detectedIndent.count + tabWidth;
+  } else if (templateRaw.search(/\S/u) === 0) {
+    // Content starts immediately (no leading whitespace)
+    contentCount = indentChar === '\t' ? 1 : tabWidth;
+  } else {
+    // Use detected indentation
+    contentCount = detectedIndent.count;
+  }
+
+  // Calculate closing backtick indentation (one level less than content)
+  const closingCount =
+    indentChar === '\t'
+      ? Math.max(contentCount - 1, 0)
+      : Math.max(contentCount - tabWidth, 0);
+
+  return {
+    char: indentChar,
+    closingCount,
+    contentCount,
+  };
 };
 
 export const rule = createRule<Options, MessageIds>({
@@ -96,6 +181,7 @@ export const rule = createRule<Options, MessageIds>({
     } = pluginOptions;
 
     const tabWidth = context.options?.[1]?.tabWidth ?? 2;
+    const useTabs = context.options?.[1]?.useTabs;
 
     return {
       TemplateLiteral(node) {
@@ -125,24 +211,6 @@ export const rule = createRule<Options, MessageIds>({
           return;
         }
 
-        let indentAnchorOffset = findFirstMeaningfulIndent(
-          templateElement.value.raw,
-        );
-
-        if (templateElement.value.raw.search(/\S/u) === -1) {
-          const lines = templateElement.value.raw.split('\n');
-
-          const lastLine = lines[lines.length - 1];
-
-          if (lastLine) {
-            indentAnchorOffset = lastLine.length;
-          } else {
-            indentAnchorOffset = 0;
-          }
-        } else if (templateElement.value.raw.search(/\S/u) === 0) {
-          indentAnchorOffset = tabWidth;
-        }
-
         const magic = '"gajus-eslint-plugin-sql"';
 
         const literal = node.quasis
@@ -150,6 +218,8 @@ export const rule = createRule<Options, MessageIds>({
             return quasi.value.raw;
           })
           .join(magic);
+
+        const indentConfig = calculateIndentConfig(literal, useTabs, tabWidth);
 
         if (!sqlTagIsPresent && !isSqlQuery(literal, placeholderRule)) {
           return;
@@ -190,13 +260,17 @@ export const rule = createRule<Options, MessageIds>({
         }
 
         if (retainBaseIndent) {
-          formatted = padIndent(formatted, indentAnchorOffset);
+          formatted = padIndent(
+            formatted,
+            indentConfig.char,
+            indentConfig.contentCount,
+          );
+          formatted +=
+            '\n' + indentConfig.char.repeat(indentConfig.closingCount);
         } else {
-          formatted = dropBaseIndent(literal);
+          formatted = dropBaseIndent(formatted);
+          formatted += '\n';
         }
-
-        formatted +=
-          '\n' + ' '.repeat(Math.max(indentAnchorOffset - tabWidth, 0));
 
         if (formatted !== literal) {
           context.report({
