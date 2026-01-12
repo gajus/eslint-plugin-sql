@@ -337,12 +337,14 @@ export const rule = createRule<Options, MessageIds>({
               },
               named: {
                 items: {
+                  enum: [':', '@', '$'],
                   type: 'string',
                 },
                 type: 'array',
               },
               numbered: {
                 items: {
+                  enum: ['?', ':', '$'],
                   type: 'string',
                 },
                 type: 'array',
@@ -352,6 +354,7 @@ export const rule = createRule<Options, MessageIds>({
               },
               quoted: {
                 items: {
+                  enum: [':', '@', '$'],
                   type: 'string',
                 },
                 type: 'array',
