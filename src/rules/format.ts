@@ -41,6 +41,13 @@ type Options = [
       | 'transactsql'
       | 'trino'
       | 'tsql';
+    paramTypes?: {
+      custom?: Array<{ regex: string }>;
+      named?: (':' | '@' | '$')[];
+      numbered?: ('?' | ':' | '$')[];
+      positional?: boolean;
+      quoted?: (':' | '@' | '$')[];
+    };
     tabWidth?: number;
     useTabs?: boolean;
   },
@@ -311,6 +318,46 @@ export const rule = createRule<Options, MessageIds>({
           language: {
             default: 'sql',
             type: 'string',
+          },
+          paramTypes: {
+            additionalProperties: false,
+            properties: {
+              custom: {
+                items: {
+                  additionalProperties: false,
+                  properties: {
+                    regex: {
+                      type: 'string',
+                    },
+                  },
+                  required: ['regex'],
+                  type: 'object',
+                },
+                type: 'array',
+              },
+              named: {
+                items: {
+                  type: 'string',
+                },
+                type: 'array',
+              },
+              numbered: {
+                items: {
+                  type: 'string',
+                },
+                type: 'array',
+              },
+              positional: {
+                type: 'boolean',
+              },
+              quoted: {
+                items: {
+                  type: 'string',
+                },
+                type: 'array',
+              },
+            },
+            type: 'object',
           },
           tabWidth: {
             default: 2,

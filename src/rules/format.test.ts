@@ -439,6 +439,37 @@ export default createRuleTester(
         name: 'reports parse error for malformed SQL instead of crashing',
         options: [{}, {}],
       },
+      {
+        code: multiline`
+          sql\`
+            SELECT * FROM users WHERE name = :name AND id = :id
+          \`
+        `,
+        errors: [
+          {
+            messageId: 'format',
+          },
+        ],
+        name: 'formats MySQL query with custom named placeholders using paramTypes',
+        options: [
+          {},
+          {
+            language: 'mysql',
+            paramTypes: { named: [':'] },
+          },
+        ],
+        output: multiline`
+          sql\`
+            SELECT
+              *
+            FROM
+              users
+            WHERE
+              name = :name
+              AND id = :id
+          \`
+        `,
+      },
     ],
     valid: [
       {
