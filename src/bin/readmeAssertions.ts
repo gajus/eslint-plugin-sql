@@ -6,14 +6,9 @@ import { glob } from 'glob';
 import _ from 'lodash';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 type EslintError = {
-  message?: string;
-  messageId?: string;
+  message: string;
 };
 
 type Setup = {
@@ -23,7 +18,7 @@ type Setup = {
   output: string;
 };
 
-const formatCodeSnippet = (setup: Setup, ruleMessages: Record<string, string>) => {
+const formatCodeSnippet = (setup: Setup) => {
   const paragraphs: string[] = [];
 
   paragraphs.push(setup.code);
@@ -33,9 +28,8 @@ const formatCodeSnippet = (setup: Setup, ruleMessages: Record<string, string>) =
   }
 
   if (setup.errors) {
-    for (const error of setup.errors) {
-      const message = error.message || (error.messageId ? ruleMessages[error.messageId] : null) || error.messageId;
-      paragraphs.push('// Message: ' + message);
+    for (const message of setup.errors) {
+      paragraphs.push('// Message: ' + message.message);
     }
   }
 
@@ -48,49 +42,50 @@ const formatCodeSnippet = (setup: Setup, ruleMessages: Record<string, string>) =
   return paragraphs.join('\n');
 };
 
-const getAssertions = async () => {
-  const ruleFiles = await glob(
-    path.resolve(__dirname, '../../src/rules/!(*.test).ts'),
+const getAssertions = () => {
+  const assertionFiles = glob.sync(
+    path.resolve(__dirname, '../../src/rules/*.test.ts'),
   );
 
-  const assertions: Record<string, any> = {};
+  const assertionNames = _.map(assertionFiles, (filePath) => {
+    return path.basename(filePath, '.test.ts');
+  });
 
-  for (const ruleFile of ruleFiles) {
-    const ruleName = path.basename(ruleFile, '.ts');
-    const testFile = ruleFile.replace('.ts', '.test.ts');
+  const assertionCodes = _.map(assertionFiles, (filePath) => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+    const codes = require(filePath);
 
-    if (fs.existsSync(testFile)) {
-      const { rule } = await import(ruleFile);
-      const testModule = await import(testFile);
-      const ruleMessages = rule.meta.messages;
-      const testCases = testModule.default.testCases;
+    return {
+      invalid: _.map(codes.default.testCases.invalid, formatCodeSnippet),
+      valid: _.map(codes.default.testCases.valid, formatCodeSnippet),
+    };
+  });
 
-      assertions[ruleName] = {
-        invalid: _.map(testCases.invalid, (setup) => formatCodeSnippet(setup, ruleMessages)),
-        valid: _.map(testCases.valid, (setup) => formatCodeSnippet(setup, ruleMessages)),
-      };
-    }
-  }
-
-  return assertions;
+  return _.zipObject(assertionNames, assertionCodes);
 };
 
-const updateDocuments = (assertions: Record<string, any>) => {
+const updateDocuments = (assertions) => {
   const readmeDocumentPath = path.join(__dirname, '../../README.md');
 
-  const documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
+  let documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
 
-  const newDocumentBody = documentBody.replace(
-    /<!-- assertions ([a-z-]+) -->(?:[\S\s]*?<!-- end-assertions -->)?/giu,
-    (match, ruleName) => {
-      const assertionKey = _.camelCase(ruleName);
-      const ruleAssertions = assertions[assertionKey];
+  documentBody = documentBody.replaceAll(
+    // eslint-disable-next-line regexp/no-unused-capturing-group
+    /<!-- assertions ([a-z]+) -->/giu,
+    (assertionsBlock) => {
+      let exampleBody = '';
 
-      if (!ruleAssertions) {
-        return match;
+      const ruleName = /assertions ([a-z]+)/iu.exec(assertionsBlock)?.[1];
+
+      if (!ruleName) {
+        throw new Error('Rule name not found.');
       }
 
-      let exampleBody = '';
+      const ruleAssertions = assertions[ruleName];
+
+      if (!ruleAssertions) {
+        throw new Error('No assertions available for rule "' + ruleName + '".');
+      }
 
       if (ruleAssertions.invalid.length) {
         exampleBody +=
@@ -106,12 +101,11 @@ const updateDocuments = (assertions: Record<string, any>) => {
           '\n```\n\n';
       }
 
-      return `<!-- assertions ${ruleName} -->\n\n${exampleBody.trim()}\n\n<!-- end-assertions -->`;
+      return exampleBody;
     },
   );
 
-  fs.writeFileSync(readmeDocumentPath, newDocumentBody);
+  fs.writeFileSync(readmeDocumentPath, documentBody);
 };
 
-const assertions = await getAssertions();
-updateDocuments(assertions);
+updateDocuments(getAssertions());
