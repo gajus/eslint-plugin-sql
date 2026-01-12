@@ -12,8 +12,6 @@ SQL linting rules for ESLint.
 * [eslint-plugin-sql](#user-content-eslint-plugin-sql)
     * [Installation](#user-content-eslint-plugin-sql-installation)
     * [Configuration](#user-content-eslint-plugin-sql-configuration)
-        * [ESLint 9+ (Flat Config)](#user-content-eslint-plugin-sql-configuration-eslint-9-flat-config)
-        * [ESLint 8 (.eslintrc)](#user-content-eslint-plugin-sql-configuration-eslint-8-eslintrc)
     * [Settings](#user-content-eslint-plugin-sql-settings)
         * [`placeholderRule`](#user-content-eslint-plugin-sql-settings-placeholderrule)
     * [Rules](#user-content-eslint-plugin-sql-rules)
@@ -39,33 +37,10 @@ npm install eslint-plugin-sql --save-dev
 <a name="eslint-plugin-sql-configuration"></a>
 ## Configuration
 
-<a name="user-content-eslint-plugin-sql-configuration-eslint-9-flat-config"></a>
-<a name="eslint-plugin-sql-configuration-eslint-9-flat-config"></a>
-### ESLint 9+ (Flat Config)
-
-1. Import `eslint-plugin-sql`.
-2. Use the recommended configuration or customize rules.
-
-```javascript
-import sql from 'eslint-plugin-sql';
-
-export default [
-  // Use the recommended configuration
-  sql.configs['flat/recommended'],
-  {
-     rules: {
-         'sql/format': ['error', { ignoreInline: false }]
-     }
-  }
-];
-```
-
-<a name="user-content-eslint-plugin-sql-configuration-eslint-8-eslintrc"></a>
-<a name="eslint-plugin-sql-configuration-eslint-8-eslintrc"></a>
-### ESLint 8 (.eslintrc)
-
 1. Add `plugins` section and specify `eslint-plugin-sql` as a plugin.
-2. Enable rules.
+1. Enable rules.
+
+<!-- -->
 
 ```json
 {
@@ -94,32 +69,7 @@ export default [
     }
   }
 }
-```
 
-<!-- -->
-
-```json
-{
-  "plugins": [
-    "sql"
-  ],
-  "rules": {
-    "sql/format": [
-      2,
-      {
-        "ignoreExpressions": false,
-        "ignoreInline": true,
-        "ignoreTagless": true
-      }
-    ],
-    "sql/no-unsafe-query": [
-      2,
-      {
-        "allowLiteral": false
-      }
-    ]
-  }
-}
 ```
 
 <a name="user-content-eslint-plugin-sql-settings"></a>
@@ -192,7 +142,7 @@ sql.fragment`
     m1.ID = ${message.id}
 `
 // Options: [{},{"identifierCase":"lower"}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // sql.fragment`
 //   SELECT
@@ -207,7 +157,7 @@ sql.fragment`
   SELECT id::NUMERIC
 `
 // Options: [{},{"dataTypeCase":"lower","language":"postgresql"}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // sql.fragment`
 //   SELECT
@@ -223,7 +173,7 @@ sql.fragment`
     id = ${message.id}
 `
 // Options: [{},{"keywordCase":"lower"}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // sql.fragment`
 //   select
@@ -243,7 +193,7 @@ sql.fragment`
     id = ${message.id}
 `
 // Options: [{},{"keywordCase":"upper"}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // sql.fragment`
 //   SELECT
@@ -262,7 +212,7 @@ SET
 WHERE id = ${message.id}
 `;
 // Options: [{},{"tabWidth":4}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // sql.fragment`
 //   ${null}
@@ -280,7 +230,7 @@ await pool.query(sql.typeAlias('void')`
   WHERE id = ${message.id}
 `);
 // Options: [{},{"tabWidth":4}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // await pool.query(sql.typeAlias('void')`
 //   UPDATE message
@@ -295,7 +245,7 @@ sql`
     1
 `
 // Options: [{},{"tabWidth":4}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // sql`
 //   SELECT
@@ -307,7 +257,7 @@ sql.type({ id: z.number() })`
     1
 `
 // Options: [{},{"tabWidth":4}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // sql.type({ id: z.number() })`
 //   SELECT
@@ -319,7 +269,7 @@ sql.typeAlias('void')`
     1
 `
 // Options: [{},{"tabWidth":4}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // sql.typeAlias('void')`
 //   SELECT
@@ -328,7 +278,7 @@ sql.typeAlias('void')`
 
 `SELECT 1`
 // Options: [{"ignoreInline":false,"ignoreTagless":false},{}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // `
 //   SELECT
@@ -337,7 +287,7 @@ sql.typeAlias('void')`
 
 `SELECT 2`
 // Options: [{"ignoreInline":false,"ignoreTagless":false},{"tabWidth":2}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // `
 //   SELECT
@@ -346,7 +296,7 @@ sql.typeAlias('void')`
 
 sql.unsafe`SELECT 3`
 // Options: [{"ignoreInline":false},{}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // sql.unsafe`
 //   SELECT
@@ -355,7 +305,7 @@ sql.unsafe`SELECT 3`
 
 sql.type()`SELECT 3`
 // Options: [{"ignoreInline":false},{}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // sql.type()`
 //   SELECT
@@ -364,7 +314,7 @@ sql.type()`SELECT 3`
 
 `SELECT ${'foo'} FROM ${'bar'}`
 // Options: [{"ignoreInline":false,"ignoreTagless":false},{}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // `
 //   SELECT
@@ -380,7 +330,7 @@ const code = sql`
       bar
 `
 // Options: [{},{}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // const code = sql`
 //   SELECT
@@ -391,7 +341,7 @@ const code = sql`
 
 SQL`SELECT 1`
 // Options: [{"ignoreInline":false,"sqlTag":"SQL"},{}]
-// Message: Format the query
+// Message: undefined
 // Fixed code: 
 // SQL`
 //   SELECT
@@ -443,7 +393,7 @@ const code = sql`
 // Options: [{},{}]
 ```
 
-<!-- end-assertions -->
+
 
 <a name="user-content-eslint-plugin-sql-rules-no-unsafe-query"></a>
 <a name="eslint-plugin-sql-rules-no-unsafe-query"></a>
@@ -467,26 +417,24 @@ The first option is an object with the following configuration.
 |`allowLiteral`|boolean|`false`|Controls whether `sql` tag is required for template literals containing literal queries, i.e. template literals without expressions.|
 |`sqlTag`|string|`sql`|Template tag name for SQL.|
 
-<!-- assertions noUnsafeQuery -->
-
 The following patterns are considered problems:
 
 ```js
 `SELECT 1`
-// Message: Use "{{sqlTag}}" tag
+// Message: undefined
 
 `SELECT ${'foo'}`
-// Message: Use "{{sqlTag}}" tag
+// Message: undefined
 
 foo`SELECT ${'bar'}`
-// Message: Use "{{sqlTag}}" tag
+// Message: undefined
 
 `SELECT ?`
-// Message: Use "{{sqlTag}}" tag
+// Message: undefined
 
 foo`SELECT ${'bar'}`
 // Options: [{"sqlTag":"SQL"}]
-// Message: Use "{{sqlTag}}" tag
+// Message: undefined
 ```
 
 The following patterns are not considered problems:
@@ -505,5 +453,5 @@ SQL`SELECT ${'bar'}`
 // Options: [{"sqlTag":"SQL"}]
 ```
 
-<!-- end-assertions -->
+
 

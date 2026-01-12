@@ -4,22 +4,20 @@
     "declaration": false,
     "esModuleInterop": true,
     "lib": [
-      "ES2022"
+      "es2021"
     ],
     "module": "Node16",
     "moduleResolution": "node16",
     "noEmit": true,
     "noImplicitAny": false,
     "noImplicitReturns": true,
-    "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2022",
+    "target": "es2018",
     "useUnknownInCatchVariables": false
   },
   "include": [
     "src",
-    "eslint.config.ts",
-    "test/**/*.ts"
+    "eslint.config.ts"
   ]
 }

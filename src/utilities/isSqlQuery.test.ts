@@ -1,3 +1,6 @@
+/* global describe */
+/* global it */
+
 import { isSqlQuery } from './isSqlQuery.js';
 import assert from 'node:assert';
 
