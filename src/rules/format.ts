@@ -43,10 +43,10 @@ type Options = [
       | 'tsql';
     paramTypes?: {
       custom?: Array<{ regex: string }>;
-      named?: (':' | '@' | '$')[];
-      numbered?: ('?' | ':' | '$')[];
+      named?: Array<'$' | ':' | '@'>;
+      numbered?: Array<'$' | ':' | '?'>;
       positional?: boolean;
-      quoted?: (':' | '@' | '$')[];
+      quoted?: Array<'$' | ':' | '@'>;
     };
     tabWidth?: number;
     useTabs?: boolean;
