@@ -5,7 +5,10 @@
 import { glob } from 'glob';
 import _ from 'lodash';
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
+
+const require = createRequire(import.meta.url);
 
 type EslintError = {
   message: string;
@@ -44,7 +47,7 @@ const formatCodeSnippet = (setup: Setup) => {
 
 const getAssertions = () => {
   const assertionFiles = glob.sync(
-    path.resolve(__dirname, '../../src/rules/*.test.ts'),
+    path.resolve(import.meta.dirname, '../../src/rules/*.test.ts'),
   );
 
   const assertionNames = _.map(assertionFiles, (filePath) => {
@@ -52,7 +55,6 @@ const getAssertions = () => {
   });
 
   const assertionCodes = _.map(assertionFiles, (filePath) => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
     const codes = require(filePath);
 
     return {
@@ -65,7 +67,7 @@ const getAssertions = () => {
 };
 
 const updateDocuments = (assertions) => {
-  const readmeDocumentPath = path.join(__dirname, '../../README.md');
+  const readmeDocumentPath = path.join(import.meta.dirname, '../../README.md');
 
   let documentBody = fs.readFileSync(readmeDocumentPath, 'utf8');
 
