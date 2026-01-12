@@ -425,6 +425,20 @@ export default createRuleTester(
           \`
         `,
       },
+      {
+        code: multiline`
+          sql\`
+            SELECT hi !
+          \`
+        `,
+        errors: [
+          {
+            messageId: 'parseError',
+          },
+        ],
+        name: 'reports parse error for malformed SQL instead of crashing',
+        options: [{}, {}],
+      },
     ],
     valid: [
       {

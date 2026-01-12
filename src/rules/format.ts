@@ -4,7 +4,7 @@ import { isSqlQuery } from '../utilities/isSqlQuery.js';
 import { AST_NODE_TYPES } from '@typescript-eslint/utils';
 import { format } from 'sql-formatter';
 
-type MessageIds = 'format';
+type MessageIds = 'format' | 'parseError';
 
 type Options = [
   {
@@ -152,10 +152,23 @@ export const rule = createRule<Options, MessageIds>({
           return;
         }
 
-        let formatted = format(literal, {
-          ...context.options[1],
-          tabWidth,
-        });
+        let formatted: string;
+        try {
+          formatted = format(literal, {
+            ...context.options[1],
+            tabWidth,
+          });
+        } catch (error) {
+          context.report({
+            data: {
+              message:
+                error instanceof Error ? error.message : 'Unknown parse error',
+            },
+            messageId: 'parseError',
+            node,
+          });
+          return;
+        }
 
         if (
           ignoreStartWithNewLine &&
@@ -235,6 +248,7 @@ export const rule = createRule<Options, MessageIds>({
     fixable: 'code',
     messages: {
       format: 'Format the query',
+      parseError: 'SQL parse error: {{message}}',
     },
     schema: [
       {
