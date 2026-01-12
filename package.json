@@ -2,7 +2,7 @@
   "author": {
     "email": "gajus@gajus.com",
     "name": "Gajus Kuizinas",
-    "url": "http://gajus.com"
+    "url": "https://gajus.com"
   },
   "dependencies": {
     "@typescript-eslint/utils": "^8.31.0",
