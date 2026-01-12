@@ -62,11 +62,6 @@ npm install eslint-plugin-sql --save-dev
         "allowLiteral": false
       }
     ]
-  },
-  "settings": {
-    "sql": {
-      "placeholderRule": "\\?"
-    }
   }
 }
 
@@ -122,13 +117,51 @@ The second option is an object with the [`sql-formatter` configuration](https://
 |configuration|default|description|
 |---|---|---|
 |`useTabs`|`false`|Use tabs for indentation.|
-|`tabWidth`|2|Number of spaces per indentation.|
+|`tabSize`|2|Number of spaces per indentation.|
 |`language`|`sql`|Language of the query.|
 |`keywordCase`|`preserve`|Determines the case of keywords (`preserve`, `upper`, `lower`).|
 |`dataTypeCase`|`preserve`|Determines the case of data types (`preserve`, `upper`, `lower`).|
 |`denseOperators`|`false`|Decides whitespace around operators.|
 |`identifierCase`|`preserve`|Determines the case of identifiers (`preserve`, `upper`, `lower`).|
 |`functionCase`|`preserve`|Determines the case of functions (`preserve`, `upper`, `lower`).|
+|`paramTypes`|dialect default|Configures parameter placeholders. See [paramTypes documentation](https://github.com/sql-formatter-org/sql-formatter/blob/master/docs/paramTypes.md).|
+
+<a name="user-content-eslint-plugin-sql-rules-format-using-custom-parameter-placeholders"></a>
+<a name="eslint-plugin-sql-rules-format-using-custom-parameter-placeholders"></a>
+#### Using Custom Parameter Placeholders
+
+Different SQL dialects support different placeholder styles. By default, sql-formatter uses dialect-specific placeholders (e.g., `$1, $2` for PostgreSQL, `?` for MySQL). If you're using a different placeholder style like `:name`, you need to configure `paramTypes`.
+
+For example, if you're using `:name` style placeholders with PostgreSQL:
+
+```js
+{
+  "rules": {
+    "sql/format": [
+      2,
+      {
+        "sqlTag": "sql"
+      },
+      {
+        "language": "postgresql",
+        "paramTypes": {
+          "named": [":"]
+        }
+      }
+    ]
+  }
+}
+```
+
+The `paramTypes` object supports:
+
+|property|type|description|
+|---|---|---|
+|`positional`|`boolean`|Enable `?` positional placeholders.|
+|`numbered`|`('$' \| ':' \| '?')[]`|Prefixes for numbered placeholders (e.g., `$1`, `:1`).|
+|`named`|`('$' \| ':' \| '@')[]`|Prefixes for named placeholders (e.g., `:name`, `@name`).|
+|`quoted`|`('$' \| ':' \| '@')[]`|Prefixes for quoted placeholders (e.g., `:"name"`).|
+|`custom`|`{ regex: string }[]`|Custom placeholder patterns using regex.|
 
 The following patterns are considered problems:
 
@@ -346,6 +379,43 @@ SQL`SELECT 1`
 // SQL`
 //   SELECT
 //     1
+// `
+
+sql`
+  SELECT hi !
+`
+// Options: [{},{}]
+// Message: undefined
+
+sql`
+  SELECT * FROM users WHERE name = :name AND id = :id
+`
+// Options: [{},{"language":"mysql","paramTypes":{"named":[":"]}}]
+// Message: undefined
+// Fixed code: 
+// sql`
+//   SELECT
+//     *
+//   FROM
+//     users
+//   WHERE
+//     name = :name
+//     AND id = :id
+// `
+
+SQL`
+  SELECT * FROM users WHERE user_id = :user_id
+`
+// Options: [{"sqlTag":"SQL"},{"keywordCase":"upper","language":"postgresql","paramTypes":{"named":[":"]}}]
+// Message: undefined
+// Fixed code: 
+// SQL`
+//   SELECT
+//     *
+//   FROM
+//     users
+//   WHERE
+//     user_id = :user_id
 // `
 ```
 

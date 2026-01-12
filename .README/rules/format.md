@@ -31,5 +31,41 @@ The second option is an object with the [`sql-formatter` configuration](https://
 |`denseOperators`|`false`|Decides whitespace around operators.|
 |`identifierCase`|`preserve`|Determines the case of identifiers (`preserve`, `upper`, `lower`).|
 |`functionCase`|`preserve`|Determines the case of functions (`preserve`, `upper`, `lower`).|
+|`paramTypes`|dialect default|Configures parameter placeholders. See [paramTypes documentation](https://github.com/sql-formatter-org/sql-formatter/blob/master/docs/paramTypes.md).|
+
+#### Using Custom Parameter Placeholders
+
+Different SQL dialects support different placeholder styles. By default, sql-formatter uses dialect-specific placeholders (e.g., `$1, $2` for PostgreSQL, `?` for MySQL). If you're using a different placeholder style like `:name`, you need to configure `paramTypes`.
+
+For example, if you're using `:name` style placeholders with PostgreSQL:
+
+```js
+{
+  "rules": {
+    "sql/format": [
+      2,
+      {
+        "sqlTag": "sql"
+      },
+      {
+        "language": "postgresql",
+        "paramTypes": {
+          "named": [":"]
+        }
+      }
+    ]
+  }
+}
+```
+
+The `paramTypes` object supports:
+
+|property|type|description|
+|---|---|---|
+|`positional`|`boolean`|Enable `?` positional placeholders.|
+|`numbered`|`('$' \| ':' \| '?')[]`|Prefixes for numbered placeholders (e.g., `$1`, `:1`).|
+|`named`|`('$' \| ':' \| '@')[]`|Prefixes for named placeholders (e.g., `:name`, `@name`).|
+|`quoted`|`('$' \| ':' \| '@')[]`|Prefixes for quoted placeholders (e.g., `:"name"`).|
+|`custom`|`{ regex: string }[]`|Custom placeholder patterns using regex.|
 
 <!-- assertions format -->
