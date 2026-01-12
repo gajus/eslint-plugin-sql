@@ -25,15 +25,23 @@
     "eslint-config-canonical": "44.9.5",
     "gitdown": "^4.1.1",
     "glob": "^11.0.2",
+    "globals": "^16.5.0",
     "husky": "^9.1.7",
     "mocha": "^11.1.0",
     "semantic-release": "^24.2.3",
+    "tsup": "^8.5.1",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.31.0"
   },
   "engines": {
     "node": ">=12"
+  },
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "require": "./dist/index.cjs",
+    "import": "./dist/index.js",
+    "default": "./dist/index.js"
   },
   "files": [
     "src",
@@ -45,7 +53,7 @@
     "sql"
   ],
   "license": "BSD-3-Clause",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "name": "eslint-plugin-sql",
   "peerDependencies": {
     "eslint": ">=8.1.0"
@@ -55,15 +63,16 @@
     "url": "https://github.com/gajus/eslint-plugin-sql"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "tsup",
     "documentation-add-assertions": "tsx ./src/bin/readmeAssertions",
     "generate": "gitdown ./.README/README.md --output-file ./README.md && npm run documentation-add-assertions",
     "lint:cspell": "cspell './**/*.{ts,tsx}' --no-progress --gitignore",
-    "lint:eslint": "eslint ./src",
+    "lint:eslint": "eslint ./{src,test}",
+    "lint:eslint:fix": "eslint ./{src,test} --fix",
     "lint:tsc": "tsc --noEmit",
     "prepare": "husky",
     "test": "npm run test:mocha",
-    "test:mocha": "mocha --require tsx src/**/*.test.ts"
+    "test:mocha": "mocha --require tsx \"{src,test}/**/*.{test.ts,test.cjs}\""
   },
   "type": "module",
   "types": "./dist/index.d.ts",
